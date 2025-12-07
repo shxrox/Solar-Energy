@@ -7,6 +7,7 @@ import { NotFoundError, ValidationError } from "../domain/errors/errors";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   // Updated to match the version expected by your installed library
   apiVersion: "2025-11-17.clover", 
+  
 });
 
 // 1. Create Checkout Session (Frontend calls this)
