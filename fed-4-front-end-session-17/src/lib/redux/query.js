@@ -1,138 +1,5 @@
 // import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// const baseUrl = "http://localhost:8000/api";
-
-// // Define a service using a base URL and expected endpoints
-// export const api = createApi({
-//   reducerPath: "api",
-//   baseQuery: fetchBaseQuery({ baseUrl: baseUrl, prepareHeaders: async (headers) => {
-//     const clerk = window.Clerk;
-//     if (clerk) {
-//       const token = await clerk.session.getToken();
-//       if (token) {
-//         headers.set("Authorization", `Bearer ${token}`);
-//       }
-//     }
-//     return headers;
-//   } }),
-//   endpoints: (build) => ({
-//     getEnergyGenerationRecordsBySolarUnit: build.query({
-//       query: ({id, groupBy, limit}) => `/energy-generation-records/solar-unit/${id}?groupBy=${groupBy}&limit=${limit}`,
-//     }),
-//     getSolarUnitForUser: build.query({
-//       query: () => `/solar-units/me`,
-//     }),
-//     getSolarUnits: build.query({
-//       query: () => `/solar-units`,
-//     }),
-//     getSolarUnitById: build.query({
-//       query: (id) => `/solar-units/${id}`,
-//     }),
-//     createSolarUnit: build.mutation({
-//       query: (data) => ({
-//         url: `/solar-units`,
-//         method: "POST",
-//         body: data,
-//       }),
-//     }),
-//     editSolarUnit: build.mutation({
-//       query: ({id, data}) => ({
-//         url: `/solar-units/${id}`,
-//         method: "PUT",
-//         body: data,
-//       }),
-//     }),
-//     getAllUsers: build.query({
-//       query: () => `/users`,
-//     }),
-//   }),
-// });
-
-// // Export hooks for usage in functional components, which are
-// // auto-generated based on the defined endpoints
-// export const { useGetAllUsersQuery, useGetEnergyGenerationRecordsBySolarUnitQuery, useGetSolarUnitForUserQuery, useGetSolarUnitsQuery, useGetSolarUnitByIdQuery, useCreateSolarUnitMutation, useEditSolarUnitMutation } = api;
-
-
-// import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-// const baseUrl = "http://localhost:8000/api";
-
-// // Define a service using a base URL and expected endpoints
-// export const api = createApi({
-//   reducerPath: "api",
-//   baseQuery: fetchBaseQuery({
-//     baseUrl: baseUrl,
-//     prepareHeaders: async (headers) => {
-//       const clerk = window.Clerk;
-//       if (clerk) {
-//         const token = await clerk.session?.getToken();
-//         if (token) {
-//           headers.set("Authorization", `Bearer ${token}`);
-//         }
-//       }
-//       return headers;
-//     },
-//   }),
-//   endpoints: (build) => ({
-//     // --- EXISTING ENDPOINTS ---
-//     getEnergyGenerationRecordsBySolarUnit: build.query({
-//       query: ({ id, groupBy, limit }) =>
-//         `/energy-generation-records/solar-unit/${id}?groupBy=${groupBy}&limit=${limit}`,
-//     }),
-//     getSolarUnitForUser: build.query({
-//       query: () => `/solar-units/me`,
-//     }),
-//     getSolarUnits: build.query({
-//       query: () => `/solar-units`,
-//     }),
-//     getSolarUnitById: build.query({
-//       query: (id) => `/solar-units/${id}`,
-//     }),
-//     createSolarUnit: build.mutation({
-//       query: (data) => ({
-//         url: `/solar-units`,
-//         method: "POST",
-//         body: data,
-//       }),
-//     }),
-//     editSolarUnit: build.mutation({
-//       query: ({ id, data }) => ({
-//         url: `/solar-units/${id}`,
-//         method: "PUT",
-//         body: data,
-//       }),
-//     }),
-//     getAllUsers: build.query({
-//       query: () => `/users`,
-//     }),
-
-//     // --- NEW TASK 3 ENDPOINTS ---
-//     getWeather: build.query({
-//       query: () => `/weather`,
-//     }),
-//     getCapacityFactor: build.query({
-//       query: (solarUnitId) => `/analytics/capacity-factor/${solarUnitId}`,
-//     }),
-//   }),
-// });
-
-// // Export hooks for usage in functional components
-// export const {
-//   useGetAllUsersQuery,
-//   useGetEnergyGenerationRecordsBySolarUnitQuery,
-//   useGetSolarUnitForUserQuery,
-//   useGetSolarUnitsQuery,
-//   useGetSolarUnitByIdQuery,
-//   useCreateSolarUnitMutation,
-//   useEditSolarUnitMutation,
-//   // New Hooks Exported Here:
-//   useGetWeatherQuery,
-//   useGetCapacityFactorQuery,
-// } = api;
-
-
-// import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
 // // Use environment variable if available, otherwise default to localhost:8000
 // const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
@@ -151,7 +18,7 @@
 //       return headers;
 //     },
 //   }),
-//   tagTypes: ["SolarUnits", "Users"], // Used for cache invalidation (auto-refresh)
+//   tagTypes: ["SolarUnits", "Users"],
 //   endpoints: (build) => ({
 //     // --- SOLAR UNIT ENDPOINTS ---
 //     getSolarUnits: build.query({
@@ -190,47 +57,42 @@
 //       invalidatesTags: ["SolarUnits"],
 //     }),
 
-//     // --- ENERGY DATA ENDPOINTS ---
+//     // --- DATA ENDPOINTS ---
 //     getEnergyGenerationRecordsBySolarUnit: build.query({
 //       query: ({ id, groupBy, limit }) =>
 //         `/energy-generation-records/solar-unit/${id}?groupBy=${groupBy}&limit=${limit}`,
 //     }),
-
-//     // --- USER ENDPOINTS ---
 //     getAllUsers: build.query({
 //       query: () => `/users`,
 //       providesTags: ["Users"],
 //     }),
 
-//     // --- DASHBOARD WIDGET ENDPOINTS (Task 3) ---
+//     // --- ANALYTICS DASHBOARD ENDPOINTS ---
 //     getWeather: build.query({
 //       query: () => `/weather`,
 //     }),
 //     getCapacityFactor: build.query({
 //       query: (solarUnitId) => `/analytics/capacity-factor/${solarUnitId}`,
 //     }),
+//     getAnomalyStats: build.query({
+//       query: (solarUnitId) => `/analytics/anomalies/${solarUnitId}`,
+//     }),
 //   }),
 // });
 
-// // Export hooks for usage in components
 // export const {
-//   // Solar Unit Hooks
 //   useGetSolarUnitsQuery,
 //   useGetSolarUnitByIdQuery,
 //   useGetSolarUnitForUserQuery,
 //   useCreateSolarUnitMutation,
 //   useEditSolarUnitMutation,
-//   useDeleteSolarUnitMutation, // <--- This fixes your error
-
-//   // Energy Hooks
+//   useDeleteSolarUnitMutation,
 //   useGetEnergyGenerationRecordsBySolarUnitQuery,
-
-//   // User Hooks
 //   useGetAllUsersQuery,
-
-//   // Dashboard Hooks
+//   // Analytics Hooks
 //   useGetWeatherQuery,
 //   useGetCapacityFactorQuery,
+//   useGetAnomalyStatsQuery,
 // } = api;
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
@@ -253,9 +115,10 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["SolarUnits", "Users"],
+  // ✅ Added "Invoices" tag so the list refreshes after payment
+  tagTypes: ["SolarUnits", "Users", "Invoices"], 
   endpoints: (build) => ({
-    // --- SOLAR UNIT ENDPOINTS ---
+    // --- EXISTING ENDPOINTS ---
     getSolarUnits: build.query({
       query: () => `/solar-units`,
       providesTags: ["SolarUnits"],
@@ -291,8 +154,6 @@ export const api = createApi({
       }),
       invalidatesTags: ["SolarUnits"],
     }),
-
-    // --- DATA ENDPOINTS ---
     getEnergyGenerationRecordsBySolarUnit: build.query({
       query: ({ id, groupBy, limit }) =>
         `/energy-generation-records/solar-unit/${id}?groupBy=${groupBy}&limit=${limit}`,
@@ -301,8 +162,6 @@ export const api = createApi({
       query: () => `/users`,
       providesTags: ["Users"],
     }),
-
-    // --- ANALYTICS DASHBOARD ENDPOINTS ---
     getWeather: build.query({
       query: () => `/weather`,
     }),
@@ -312,10 +171,27 @@ export const api = createApi({
     getAnomalyStats: build.query({
       query: (solarUnitId) => `/analytics/anomalies/${solarUnitId}`,
     }),
+
+    // --- ✅ NEW BILLING ENDPOINTS ---
+    getMyInvoices: build.query({
+      query: () => `/invoices`,
+      providesTags: ["Invoices"],
+    }),
+    createCheckoutSession: build.mutation({
+      query: (invoiceId) => ({
+        url: `/payments/create-checkout-session`,
+        method: "POST",
+        body: { invoiceId },
+      }),
+    }),
+    getSessionStatus: build.query({
+      query: (sessionId) => `/payments/session-status?session_id=${sessionId}`,
+    }),
   }),
 });
 
 export const {
+  // Existing hooks
   useGetSolarUnitsQuery,
   useGetSolarUnitByIdQuery,
   useGetSolarUnitForUserQuery,
@@ -324,8 +200,12 @@ export const {
   useDeleteSolarUnitMutation,
   useGetEnergyGenerationRecordsBySolarUnitQuery,
   useGetAllUsersQuery,
-  // Analytics Hooks
   useGetWeatherQuery,
   useGetCapacityFactorQuery,
   useGetAnomalyStatsQuery,
+
+  // ✅ New Billing Hooks
+  useGetMyInvoicesQuery,
+  useCreateCheckoutSessionMutation,
+  useGetSessionStatusQuery,
 } = api;

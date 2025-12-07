@@ -2,3 +2,4 @@ https://manupa.notion.site/Final-Project-Specification-2bea93edaaa780ff8002e86c0
 
 https://fed-4-frontend.netlify.app/dashboard
 
+.\stripe.exe listen --forward-to localhost:8000/api/stripe/webhook
