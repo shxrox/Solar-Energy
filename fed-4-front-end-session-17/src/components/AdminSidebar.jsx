@@ -11,7 +11,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-// Menu items for admin navigation.
+
 const items = [
   {
     title: "Solar Units",
