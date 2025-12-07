@@ -1,0 +1,59 @@
+That is a great question. You are thinking like a **Product Manager** now, not just a coder.
+
+You have built the **User Side** perfectly (they can see their own data and pay their own bills). But for a real "SaaS" (Software as a Service) business, you are missing the **Admin / Management** side of things.
+
+Here is the list of **Functional Features** currently missing from your system:
+
+### 1. Admin Financial Dashboard (The "CFO" View)
+Currently, you (Admin) cannot see how much money the company has made.
+* **Missing Function:** A "All Invoices" page for Admins.
+* **Why:** You need to see a table of **every invoice in the system**, not just your own.
+* **Features needed:**
+    * Total Revenue Chart (Income over time).
+    * Filter: Show me all **"Pending"** or **"Overdue"** invoices across all users.
+    * **Action:** Ability to manually "Mark as Paid" (e.g., if a user pays by cash/check instead of Stripe).
+
+
+
+[Image of admin financial dashboard UI]
+
+
+### 2. User Management Console
+Currently, you manage users via Clerk or by editing Solar Units directly.
+* **Missing Function:** A dedicated "Users" page in the Admin Sidebar.
+* **Features needed:**
+    * List of all registered users (Name, Email, Joined Date).
+    * **Status Column:** Does this user have a Solar Unit assigned? (Yes/No).
+    * **Action:** A "View Dashboard" button that lets the Admin **"Impersonate"** the user (see exactly what that user sees to help support them).
+
+### 3. Anomaly "Workflow" (Actioning Issues)
+Currently, your Anomaly Dashboard shows the issues, and there is an "Investigate" button, but clicking it **does nothing**.
+* **Missing Function:** Issue Resolution Workflow.
+* **Features needed:**
+    * **Acknowledge:** When Admin clicks "Investigate", the status should change from `Active` → `Under Review` in the database.
+    * **Resolve:** A button to mark an anomaly as `Fixed`, adding a timestamp and closing the alert.
+    * **History:** A log of who fixed what anomaly and when.
+
+### 4. Automated Notifications (The "Alert" System)
+Currently, a user only knows about a bill or a broken inverter if they **log in** and check the dashboard.
+* **Missing Function:** Email/SMS Alerts.
+* **Features needed:**
+    * **Billing:** Send an email when a new Invoice is generated ("You have a new bill of $109.82").
+    * **Critical Alerts:** Send an email to the User + Admin immediately if an "Inverter Failure" (0 output) is detected.
+
+### 5. Exporting Data (Reporting)
+Currently, data is locked inside the charts.
+* **Missing Function:** Download Reports.
+* **Features needed:**
+    * **CSV/PDF Export:** A button on the "Invoices" page to download the bill as a PDF.
+    * **Data Dump:** A button on the Analytics page to download the raw energy CSV for Excel analysis.
+
+---
+
+### Which one is most critical?
+
+If you want to add **one last feature** to make this impressive for your final submission, I recommend **#1: The Admin All Invoices Page**.
+
+It proves you understand that this is a **business** application, not just a personal dashboard.
+
+**Do you want the code for the Admin Invoice List?**
