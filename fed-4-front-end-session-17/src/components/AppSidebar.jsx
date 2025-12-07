@@ -84,7 +84,8 @@ import {
   BadgeDollarSign,
   ShieldCheck,    // For Admin Overview
   Sun,            // For Solar Units
-  Settings        // For Settings
+  Settings,
+  Landmark        // For Settings
 } from "lucide-react";
 import { Link, useLocation } from "react-router";
 import { useUser } from "@clerk/clerk-react"; // 1. Import Clerk Hook
@@ -130,6 +131,11 @@ const adminItems = [
     title: "Manage Units",
     url: "/admin/solar-units",
     icon: <Sun className="w-5 h-5" />,
+  },
+   {
+    title: "Financial Overview",
+    url: "/admin/invoices-dashbord",
+    icon: <Landmark className="w-8 h-8" size={32} />,
   },
   {
     title: "Settings",

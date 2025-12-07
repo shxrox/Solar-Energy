@@ -18,11 +18,13 @@ const items = [
     url: "/admin/solar-units",
     icon: <Zap className="w-8 h-8" size={32} />,
   },
+  
   {
     title: "Settings",
     url: "/admin/settings",
     icon: <Settings className="w-8 h-8" size={32} />,
   },
+
 ];
 
 const AdminSideBarTab = ({ item }) => {

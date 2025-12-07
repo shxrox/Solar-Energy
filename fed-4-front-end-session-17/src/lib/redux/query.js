@@ -1,3 +1,4 @@
+
 // import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 // // Use environment variable if available, otherwise default to localhost:8000
@@ -18,9 +19,10 @@
 //       return headers;
 //     },
 //   }),
-//   tagTypes: ["SolarUnits", "Users"],
+//   // ✅ Added "Invoices" tag so the list refreshes after payment
+//   tagTypes: ["SolarUnits", "Users", "Invoices"], 
 //   endpoints: (build) => ({
-//     // --- SOLAR UNIT ENDPOINTS ---
+//     // --- EXISTING ENDPOINTS ---
 //     getSolarUnits: build.query({
 //       query: () => `/solar-units`,
 //       providesTags: ["SolarUnits"],
@@ -56,8 +58,6 @@
 //       }),
 //       invalidatesTags: ["SolarUnits"],
 //     }),
-
-//     // --- DATA ENDPOINTS ---
 //     getEnergyGenerationRecordsBySolarUnit: build.query({
 //       query: ({ id, groupBy, limit }) =>
 //         `/energy-generation-records/solar-unit/${id}?groupBy=${groupBy}&limit=${limit}`,
@@ -66,8 +66,6 @@
 //       query: () => `/users`,
 //       providesTags: ["Users"],
 //     }),
-
-//     // --- ANALYTICS DASHBOARD ENDPOINTS ---
 //     getWeather: build.query({
 //       query: () => `/weather`,
 //     }),
@@ -77,10 +75,27 @@
 //     getAnomalyStats: build.query({
 //       query: (solarUnitId) => `/analytics/anomalies/${solarUnitId}`,
 //     }),
+
+//     // --- ✅ NEW BILLING ENDPOINTS ---
+//     getMyInvoices: build.query({
+//       query: () => `/invoices`,
+//       providesTags: ["Invoices"],
+//     }),
+//     createCheckoutSession: build.mutation({
+//       query: (invoiceId) => ({
+//         url: `/payments/create-checkout-session`,
+//         method: "POST",
+//         body: { invoiceId },
+//       }),
+//     }),
+//     getSessionStatus: build.query({
+//       query: (sessionId) => `/payments/session-status?session_id=${sessionId}`,
+//     }),
 //   }),
 // });
 
 // export const {
+//   // Existing hooks
 //   useGetSolarUnitsQuery,
 //   useGetSolarUnitByIdQuery,
 //   useGetSolarUnitForUserQuery,
@@ -89,15 +104,19 @@
 //   useDeleteSolarUnitMutation,
 //   useGetEnergyGenerationRecordsBySolarUnitQuery,
 //   useGetAllUsersQuery,
-//   // Analytics Hooks
 //   useGetWeatherQuery,
 //   useGetCapacityFactorQuery,
 //   useGetAnomalyStatsQuery,
+
+//   // ✅ New Billing Hooks
+//   useGetMyInvoicesQuery,
+//   useCreateCheckoutSessionMutation,
+//   useGetSessionStatusQuery,
 // } = api;
+
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// Use environment variable if available, otherwise default to localhost:8000
 const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
 export const api = createApi({
@@ -115,10 +134,9 @@ export const api = createApi({
       return headers;
     },
   }),
-  // ✅ Added "Invoices" tag so the list refreshes after payment
   tagTypes: ["SolarUnits", "Users", "Invoices"], 
   endpoints: (build) => ({
-    // --- EXISTING ENDPOINTS ---
+    // ... (Keep existing endpoints) ...
     getSolarUnits: build.query({
       query: () => `/solar-units`,
       providesTags: ["SolarUnits"],
@@ -172,7 +190,7 @@ export const api = createApi({
       query: (solarUnitId) => `/analytics/anomalies/${solarUnitId}`,
     }),
 
-    // --- ✅ NEW BILLING ENDPOINTS ---
+    // --- BILLING ENDPOINTS ---
     getMyInvoices: build.query({
       query: () => `/invoices`,
       providesTags: ["Invoices"],
@@ -186,6 +204,20 @@ export const api = createApi({
     }),
     getSessionStatus: build.query({
       query: (sessionId) => `/payments/session-status?session_id=${sessionId}`,
+    }),
+
+    // --- ✅ NEW ADMIN INVOICE ENDPOINTS ---
+    getAllInvoices: build.query({
+      query: (status) => `/invoices/admin/all${status ? `?status=${status}` : ''}`,
+      providesTags: ["Invoices"],
+    }),
+    updateInvoiceStatus: build.mutation({
+      query: ({ id, status }) => ({
+        url: `/invoices/admin/${id}/status`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["Invoices"],
     }),
   }),
 });
@@ -203,9 +235,11 @@ export const {
   useGetWeatherQuery,
   useGetCapacityFactorQuery,
   useGetAnomalyStatsQuery,
-
-  // ✅ New Billing Hooks
   useGetMyInvoicesQuery,
   useCreateCheckoutSessionMutation,
   useGetSessionStatusQuery,
+
+  // ✅ New Admin Hooks
+  useGetAllInvoicesQuery,
+  useUpdateInvoiceStatusMutation,
 } = api;
