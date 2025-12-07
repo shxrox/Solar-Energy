@@ -1,0 +1,9 @@
+version: 3
+agent:
+  authtoken: 34mZczqbhfRiCaUjRKwqjz6j1p8_HCx7gDjV71vPbdYZJ6ck
+endpoints:
+  - name: client
+    url: unremovable-dully-connor.ngrok-free.dev
+    upstream:
+      url: http://localhost:8000
+

@@ -1,0 +1,24 @@
+fetch("http://localhost:8000/api/invoices/generate", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${await window.Clerk.session.getToken()}`
+  }
+}).then(r => r.json()).then(console.log).catch(console.error);
+
+
+fetch("http://localhost:8000/api/invoices/generate", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${await window.Clerk.session.getToken()}`
+  }
+}).then(r => r.json()).then(console.log).catch(console.error);
+
+fetch("http://localhost:8000/api/invoices/generate", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${await window.Clerk.session.getToken()}`
+  }
+}).then(r => r.json()).then(console.log).catch(console.error);

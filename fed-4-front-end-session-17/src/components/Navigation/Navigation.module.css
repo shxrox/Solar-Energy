@@ -1,0 +1,84 @@
+.nav {
+  padding: 24px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .nav_left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .logo_container {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #9ae600;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .logo {
+        display: block;
+      }
+    }
+    span {
+      font-family: "Inter";
+      font-size: 18px;
+      font-weight: 600;
+    }
+  }
+
+  .nav_right {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+  }
+
+  .dashboard_btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+
+    .logo {
+      display: block;
+      width: 16px;
+      height: 16px;
+    }
+
+    span {
+      font-family: "Inter";
+      font-size: 14px;
+      font-weight: 500;
+    }
+  }
+
+  .user_profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .logo_container {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #51a2ff;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .logo {
+        display: block;
+        color: white;
+      }
+    }
+    span {
+      font-family: "Inter";
+      font-size: 14px;
+      font-weight: 600;
+    }
+  }
+}

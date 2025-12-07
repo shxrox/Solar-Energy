@@ -1,0 +1,119 @@
+
+
+## Task 4: Billing System Implementation
+
+**Implementation Guide:** [Stripe Integration Guide](https://www.notion.so/Stripe-Integration-Guide-Solar-Energy-Billing-2bea93edaaa7803f88fad366b9edd9f6?pvs=21)
+
+### Business Context
+
+The company charges users for the energy their solar units generate. Every month, based on the solar unit's installation date, users receive an invoice outlining their energy generation for the billing period. Users can view and pay these invoices through the dashboard via Stripe.
+
+### 4.1 Backend Requirements
+
+**Invoice Generation:**
+
+- ✅ Automatically generate monthly invoices for each solar unit
+- ✅ Billing cycle anchored to the unit's installation date
+- ✅ Calculate total energy generated (kWh) for the billing period
+- ✅ New invoices start with PENDING status
+
+**Invoice Management:**
+
+- ✅ Users can retrieve their own invoices
+- ✅ Admins can view all invoices across users
+- ✅ Support filtering by payment status (Pending, Paid, Failed)
+
+**Payment Processing:**
+
+- ✅ Integrate Stripe for payment processing
+- ✅ Configure pricing in Stripe Dashboard (per kWh rate)
+- ✅ Handle payment webhooks to update invoice status
+
+### 4.2 Frontend Requirements
+
+**User Dashboard:**
+
+- ✅ Invoices page showing all user invoices
+- ✅ Filter invoices by status (All, Pending, Paid)
+- ✅ View invoice details (billing period, energy generated, amount)
+- ✅ Pay pending invoices via Stripe Embedded Checkout
+- ✅ Payment confirmation page
+
+**Admin Dashboard:**
+
+- ✅ View all invoices across all users
+- ✅ Filter by payment status
+- ✅ See which invoices are overdue/unpaid
+
+**Navigation:**
+
+- ✅ Add "Invoices" link to sidebar with pending count badge
+
+---
+
+## Task 5: Anomaly Detection System
+
+**Objective:** Design and implement an anomaly detection system that identifies irregular patterns in solar energy generation data and presents them through an intuitive dashboard.
+
+### Business Context
+
+Solar energy systems can experience various issues that affect performance—equipment malfunctions, environmental obstructions, sensor errors, or gradual degradation. Early detection of these anomalies helps users take corrective action before significant energy or revenue loss occurs.
+
+Your task is to research what types of anomalies could occur in solar energy data, design techniques to detect them, and build a dashboard to visualize and manage detected anomalies.
+
+### 5.1 Research & Design
+
+**Deliverable:** A brief document (in your README or separate markdown file) that includes:
+
+- ✅ **Anomaly Types**: Identify at least **4 distinct anomaly types** that could occur in solar energy generation data
+- ✅ **Detection Techniques**: For each anomaly type, describe how you would detect it programmatically (statistical methods, thresholds, pattern analysis, etc.)
+- ✅ **Severity Classification**: Define severity levels (e.g., Critical, Warning, Info) and explain what determines each level
+- ✅ **User Impact**: Describe what each anomaly means for the user and what action they might take
+
+*Think critically about the data available: energy generated (kWh), timestamps, measurement intervals, solar unit capacity, and installation date.*
+
+### 5.2 Backend Implementation
+
+**Data Model:**
+
+- ✅ Create an `Anomaly` entity to store detected anomalies
+- ✅ Include relevant fields: solar unit reference, anomaly type, severity, detection timestamp, description, and resolution status
+
+**Detection Logic:**
+
+- ✅ Implement detection algorithms based on your research
+- ✅ Analyze `EnergyGenerationRecord` data to identify anomalies
+- ✅ Detection runs via a background job (scheduled task)
+
+**API Endpoints:**
+
+- ✅ Endpoint to retrieve anomalies for a user's solar unit(s)
+- ✅ Endpoint for admins to view all anomalies across the system
+- ✅ Support filtering by anomaly type, severity, or resolution status
+
+### 5.3 Frontend Implementation
+
+**Anomalies Dashboard:**
+
+- ✅ Display detected anomalies on the Anomalies page
+- ✅ Show key information: type, severity, when detected, affected period
+- ✅ Implement filtering (by type, severity, or status)
+
+**Visualization:**
+
+- ✅ Include at least **one chart or visual representation** of anomaly data (your choice—timeline, distribution chart, trend graph, etc.)
+- ✅ Use visual indicators to communicate severity (color coding, icons, etc.)
+
+**User Actions:**
+
+- ✅ Allow users to acknowledge or resolve anomalies
+- ✅ Show anomaly details with context about what triggered detection
+
+**Seeding Test Data**
+
+To demonstrate your anomaly detection with realistic scenarios, self-host the `fed-4-data-api` and modify its seed script to generate energy records that contain the anomaly patterns you've identified. Update your backend's sync logic to pull from your custom data API. This allows you to create compelling demo data that showcases your detection algorithms in action.
+
+---
+
+
+
