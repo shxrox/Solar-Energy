@@ -1,172 +1,150 @@
-// import { Link } from "react-router";
-// import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
-// import { Button } from "@/components/ui/button";
-
-
-// const Navigation = () => {
- 
-
-//   return (
-//     <nav className={"px-12 py-6 flex justify-between items-center"}>
-//       <Link to="/" className={"flex items-center gap-3"}>
-//         <div
-//           className={
-//             "w-10 h-10 rounded-full bg-lime-400 flex justify-center items-center"
-//           }
-//         >
-
-//           <img src="../public/assets/logo/logo.png" alt="logo" />
-          
-//         </div>
-//         <span className="font-[Inter] text-xl font-semibold">VoltVision</span>
-//       </Link>
-
-//       <div className={"flex items-center gap-12"}>
-//         <SignedIn>
-//           <Link to="/dashboard" className={"flex items-center gap-3 px-3 py-2"}>
-//             <svg
-//               xmlns="http://www.w3.org/2000/svg"
-//               width="24"
-//               height="24"
-//               viewBox="0 0 24 24"
-//               fill="none"
-//               stroke="currentColor"
-//               strokeWidth="2"
-//               strokeLinecap="round"
-//               strokeLinejoin="round"
-//               className="lucide lucide-chart-column-icon lucide-chart-column logo w-4 h-4 block"
-//             >
-//               <path d="M3 3v16a2 2 0 0 0 2 2h16" />
-//               <path d="M18 17V9" />
-//               <path d="M13 17V5" />
-//               <path d="M8 17v-3" />
-//             </svg>
-//             <span className="font-[Inter] text-sm font-medium">Dashboard</span>
-//           </Link>
-//         </SignedIn>
-//         <div className={"flex items-center gap-2"}>
-//           <SignedOut>
-//             <Button asChild>
-//               <Link
-//                 to="/sign-in"
-//                 className={"flex items-center gap-3 px-3 py-2"}
-//               >
-//                 Sign In
-//               </Link>
-//             </Button>
-//             <Button asChild variant={"outline"}>
-//               <Link
-//                 to="/sign-up"
-//                 className={"flex items-center gap-3 px-3 py-2"}
-//               >
-//                 Sign Up
-//               </Link>
-//             </Button>
-//           </SignedOut>
-//           <SignedIn>
-//             <UserButton />
-//           </SignedIn>
-//         </div>
-//       </div>
-//     </nav>
-//   );
-// };
-
-// export default Navigation;
-
-
-
-import { Link } from "react-router"; // or "react-router-dom" depending on your version
+import { useState } from "react";
+import { Link } from "react-router";
 import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
-import { Palette } from "lucide-react";
-
-// ✅ FIX: Import from separate files in your constants folder
+import { Palette, LayoutDashboard, Menu, X } from "lucide-react";
 import { THEMES } from "@/lib/constants/theme";
 import { useThemeStore } from "@/lib/constants/useThemeStore";
 
-const Navigation = () => {
+export default function Navigation() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { theme, setTheme } = useThemeStore();
 
+  const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+
   return (
-    // bg-base-100 and text-base-content enable the DaisyUI theme colors
-    <nav className="px-12 py-6 flex justify-between items-center bg-base-100 text-base-content transition-colors duration-200 border-b border-base-200">
-      <Link to="/" className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-lime-400 flex justify-center items-center overflow-hidden">
-          {/* Ensure this image exists in your /public folder */}
-          <img src="/assets/logo/logo.png" alt="logo" className="w-full h-full object-cover" />
-        </div>
-        <span className="font-[Inter] text-xl font-semibold">VoltVision</span>
-      </Link>
-
-      <div className="flex items-center gap-6">
-        
-        {/* --- THEME CHANGER DROPDOWN --- */}
-        <div className="dropdown dropdown-end">
-          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
-            <Palette className="h-5 w-5" />
-          </div>
-          <ul
-            tabIndex={0}
-            className="dropdown-content z-[50] menu p-2 shadow bg-base-200 rounded-box w-52 max-h-96 overflow-y-auto"
-          >
-            {THEMES.map((t) => (
-              <li key={t}>
-                <button
-                  onClick={() => setTheme(t)}
-                  className={theme === t ? "active capitalize" : "capitalize"}
-                >
-                  {t}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-        {/* ----------------------------- */}
-
-        <SignedIn>
-          <Link to="/dashboard" className="flex items-center gap-3 px-3 py-2 hover:bg-base-200 rounded-md transition-all">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-chart-column w-4 h-4"
-            >
-              <path d="M3 3v16a2 2 0 0 0 2 2h16" />
-              <path d="M18 17V9" />
-              <path d="M13 17V5" />
-              <path d="M8 17v-3" />
-            </svg>
-            <span className="font-[Inter] text-sm font-medium">Dashboard</span>
+    <nav className="sticky top-0 z-50 w-full border-b border-base-200 bg-base-100/95 backdrop-blur supports-[backdrop-filter]:bg-base-100/60 text-base-content transition-colors duration-300">
+      <div className="container mx-auto px-4 md:px-8">
+        <div className="flex h-16 items-center justify-between">
+          
+          {/* --- LOGO SECTION --- */}
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-lime-400 overflow-hidden shadow-sm group-hover:scale-105 transition-transform duration-200">
+              <img
+                src="/assets/logo/logo.png"
+                alt="VoltVision Logo"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <span className="font-[Inter] text-lg font-bold tracking-tight">
+              VoltVision
+            </span>
           </Link>
-        </SignedIn>
 
-        <div className="flex items-center gap-2">
-          <SignedOut>
-            <Button asChild variant="ghost">
-              <Link to="/sign-in" className="flex items-center gap-3 px-3 py-2">
-                Sign In
+          {/* --- DESKTOP NAVIGATION (Hidden on Mobile) --- */}
+          <div className="hidden md:flex items-center gap-6">
+            
+            {/* Theme Dropdown (DaisyUI) */}
+            <div className="dropdown dropdown-end">
+              <div tabIndex={0} role="button" className="btn btn-ghost btn-circle btn-sm">
+                <Palette className="h-5 w-5" />
+              </div>
+              <ul
+                tabIndex={0}
+                className="dropdown-content z-[100] menu p-2 shadow-lg bg-base-200 rounded-box w-52 max-h-96 overflow-y-auto border border-base-300"
+              >
+                <li className="menu-title px-4 py-2 text-xs uppercase opacity-50">Select Theme</li>
+                {THEMES.map((t) => (
+                  <li key={t}>
+                    <button
+                      onClick={() => setTheme(t)}
+                      className={`capitalize flex justify-between ${theme === t ? "active font-bold" : ""}`}
+                    >
+                      {t}
+                      {theme === t && <span className="text-xs">✓</span>}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Dashboard Link */}
+            <SignedIn>
+              <Link
+                to="/dashboard"
+                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+              >
+                <LayoutDashboard className="h-4 w-4" />
+                Dashboard
               </Link>
-            </Button>
-            <Button asChild variant="default">
-              <Link to="/sign-up" className="flex items-center gap-3 px-3 py-2">
-                Sign Up
-              </Link>
-            </Button>
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
+            </SignedIn>
+
+            {/* Auth Buttons */}
+            <div className="flex items-center gap-2 border-l border-base-300 pl-6">
+              <SignedOut>
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/sign-in">Sign In</Link>
+                </Button>
+                <Button asChild size="sm">
+                  <Link to="/sign-up">Get Started</Link>
+                </Button>
+              </SignedOut>
+              <SignedIn>
+                <UserButton 
+                  afterSignOutUrl="/"
+                  appearance={{
+                    elements: {
+                      avatarBox: "h-9 w-9 ring-2 ring-base-200"
+                    }
+                  }}
+                />
+              </SignedIn>
+            </div>
+          </div>
+
+          {/* --- MOBILE MENU TOGGLE (Visible on Mobile) --- */}
+          <div className="flex md:hidden items-center gap-4">
+             {/* Mobile Theme Toggle (Simplified) */}
+             <div className="dropdown dropdown-end">
+              <div tabIndex={0} role="button" className="btn btn-ghost btn-circle btn-sm">
+                <Palette className="h-5 w-5" />
+              </div>
+              <ul tabIndex={0} className="dropdown-content z-[100] menu p-2 shadow-lg bg-base-200 rounded-box w-48 max-h-64 overflow-y-auto">
+                {THEMES.map((t) => (
+                  <li key={t}><button onClick={() => setTheme(t)} className="capitalize">{t}</button></li>
+                ))}
+              </ul>
+            </div>
+
+            <button onClick={toggleMenu} className="btn btn-ghost btn-circle btn-sm">
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* --- MOBILE DROPDOWN MENU --- */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden border-t border-base-200 bg-base-100 px-4 py-6 shadow-lg animate-in slide-in-from-top-5">
+          <div className="flex flex-col space-y-4">
+            <SignedIn>
+              <Link
+                to="/dashboard"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-base-200"
+              >
+                <LayoutDashboard className="h-5 w-5" />
+                Dashboard
+              </Link>
+              <div className="flex items-center justify-between px-3 py-2">
+                <span className="text-sm font-medium">Account</span>
+                <UserButton />
+              </div>
+            </SignedIn>
+
+            <SignedOut>
+              <div className="grid grid-cols-2 gap-4 pt-4">
+                <Button asChild variant="outline" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Link to="/sign-in">Sign In</Link>
+                </Button>
+                <Button asChild onClick={() => setIsMobileMenuOpen(false)}>
+                  <Link to="/sign-up">Sign Up</Link>
+                </Button>
+              </div>
+            </SignedOut>
+          </div>
+        </div>
+      )}
     </nav>
   );
-};
-
-export default Navigation;
+}

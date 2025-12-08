@@ -36,7 +36,7 @@ const buttonVariants = cva(
   }
 )
 
-function Button({
+function LinkButton({
   className,
   variant,
   size,
