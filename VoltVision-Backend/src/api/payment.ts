@@ -4,12 +4,10 @@ import { authenticationMiddleware } from "./middlewares/authentication-middlewar
 
 const paymentRouter = express.Router();
 
-// POST /api/payments/create-checkout-session
-// Protected: Only logged-in users can try to pay
+
 paymentRouter.post("/create-checkout-session", authenticationMiddleware, createCheckoutSession);
 
-// GET /api/payments/session-status
-// Protected: Used to verify payment success after redirect
+
 paymentRouter.get("/session-status", authenticationMiddleware, getSessionStatus);
 
 export default paymentRouter;

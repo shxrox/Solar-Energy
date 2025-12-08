@@ -22,7 +22,7 @@ export const syncMiddleware = async (
 ) => {
   try {
     const auth = getAuth(req);
-    // If not logged in, skip sync
+   
     if (!auth.userId) return next();
 
     const user = await User.findOne({ clerkUserId: auth.userId });
@@ -31,13 +31,13 @@ export const syncMiddleware = async (
     const solarUnit = await SolarUnit.findOne({ userId: user._id });
     if (!solarUnit) return next();
 
-    // --- START SAFE SYNC ---
+
     try {
         const dataAPIResponse = await fetch(
             `http://localhost:8001/api/energy-generation-records/solar-unit/${solarUnit.serialNumber}`
         );
 
-        // Soft fail: If Data API is down/error, log it but continue
+      
         if (!dataAPIResponse.ok) {
             console.warn(`Sync failed: Data API returned ${dataAPIResponse.status}`);
             return next(); 
@@ -68,10 +68,10 @@ export const syncMiddleware = async (
             console.log(`Synced ${recordsToInsert.length} new records`);
         }
     } catch (fetchError) {
-        // This catches "Connection Refused" errors if the Data API is offline
+       
         console.error("Sync skipped: Could not connect to Data API", fetchError);
     }
-    // --- END SAFE SYNC ---
+   
 
     next();
   } catch (error) {
