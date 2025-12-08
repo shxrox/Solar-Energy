@@ -1,5 +1,5 @@
 {
-  "name": "fed-4-back-end",
+  "name": "voltvision-dataapi",
   "version": "1.0.0",
   "main": "src/index.js",
   "scripts": {
@@ -34,3 +34,5 @@
     "typescript": "^5.9.2"
   }
 }
+
+
