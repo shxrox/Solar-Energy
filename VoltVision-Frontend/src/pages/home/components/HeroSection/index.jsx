@@ -11,7 +11,7 @@ export default function HeroSection() {
             <Wind className="h-5 w-5 text-black sm:h-6 sm:w-6" />
           </div>
           <span className="text-center text-xs font-medium text-gray-900 sm:text-left sm:text-sm">
-            Solar Energy
+            Solar Energy 
           </span>
         </div>
 
