@@ -3,14 +3,14 @@ import { Sailboat, Shield, Triangle, Wind } from "lucide-react";
 
 export default function HeroSection() {
   return (
-    <div className="bg-white px-12 font-[Inter]">
+    <div className=" px-12 font-[Inter]">
       {/* Navigation Bar */}
       <nav className="flex flex-wrap items-center justify-between py-6">
         <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-lime-400 sm:h-12 sm:w-12">
-            <Wind className="h-5 w-5 text-black sm:h-6 sm:w-6" />
+            <Wind className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
-          <span className="text-center text-xs font-medium text-gray-900 sm:text-left sm:text-sm">
+          <span className="text-center text-xs font-medium  sm:text-left sm:text-sm">
             Solar Energy 
           </span>
         </div>
@@ -19,16 +19,16 @@ export default function HeroSection() {
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-400 sm:h-12 sm:w-12">
             <Sailboat className="h-5 w-5 text-white sm:h-6 sm:w-6" />
           </div>
-          <span className="text-center text-xs font-medium text-gray-900 sm:text-left sm:text-sm">
+          <span className="text-center text-xs font-medium  sm:text-left sm:text-sm">
             Home Dashboard
           </span>
         </div>
 
         <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-lime-400 sm:h-12 sm:w-12">
-            <Triangle className="h-5 w-5 fill-current text-black sm:h-6 sm:w-6" />
+            <Triangle className="h-5 w-5 fill-current sm:h-6 sm:w-6" />
           </div>
-          <span className="text-center text-xs font-medium text-gray-900 sm:text-left sm:text-sm">
+          <span className="text-center text-xs font-medium  sm:text-left sm:text-sm">
             Real-Time Monitoring
           </span>
         </div>
@@ -37,7 +37,7 @@ export default function HeroSection() {
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-400 sm:h-12 sm:w-12">
             <Shield className="h-5 w-5 text-white sm:h-6 sm:w-6" />
           </div>
-          <span className="text-center text-xs font-medium text-gray-900 sm:text-left sm:text-sm">
+          <span className="text-center text-xs font-medium  sm:text-left sm:text-sm">
             Anomaly Detection
           </span>
         </div>
@@ -48,7 +48,7 @@ export default function HeroSection() {
         <div>
           {/* Hero Section */}
           <div className="mb-12 md:mb-24">
-            <h1 className="text-4xl leading-tight font-bold text-black sm:text-5xl sm:leading-20 md:text-7xl md:leading-32 xl:text-8xl">
+            <h1 className="text-4xl leading-tight font-bold sm:text-5xl sm:leading-20 md:text-7xl md:leading-32 xl:text-8xl">
               <div>Monitor Your Home's</div>
               <div className="flex flex-row items-center gap-4 sm:gap-8">
                 <span>Solar Energy</span>

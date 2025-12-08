@@ -48,10 +48,11 @@ if (!PUBLISHABLE_KEY) {
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Provider store={store}>
+ 
+     <Provider store={store}>
       <BrowserRouter>
         <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-          <Routes>
+          <Routes >
             <Route element={<RootLayout />}>
               
               {/* Public Routes */}
