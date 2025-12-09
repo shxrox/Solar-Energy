@@ -3,8 +3,7 @@
 import React from "react";
 import { useGetSolarUnitForUserQuery, useGetAnomalyStatsQuery } from "@/lib/redux/query";
 import { useUser } from "@clerk/clerk-react";
-import { AlertTriangle, CheckCircle, Clock, AlertCircle, TrendingUp } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AlertTriangle, CheckCircle, Clock, AlertCircle, TrendingUp, Loader2 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
 const AnomaliesPage = () => {
@@ -29,21 +28,20 @@ const AnomaliesPage = () => {
   if (isLoadingUnit || isLoadingAnomalies) {
     return (
         <div className="flex h-[50vh] items-center justify-center">
-            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mr-2"></div>
-            <p className="text-muted-foreground">Loading anomaly detection...</p>
+            <Loader2 className="h-8 w-8 animate-spin opacity-50 mr-2" />
+            <p className="opacity-60">Loading anomaly detection...</p>
         </div>
     );
   }
 
-  // --- ✅ CRITICAL FIX: ERROR / NO UNIT STATE ---
-  // This prevents the "Cannot read properties of null" crash
+  // --- ERROR / NO UNIT STATE ---
   if (!solarUnit || isError) {
     return (
       <div className="p-8">
-        <div className="border border-dashed p-12 rounded-lg text-center bg-muted/10">
-            <AlertCircle className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+        <div className="border border-dashed p-12 rounded-xl text-center opacity-70">
+            <AlertCircle className="w-10 h-10 mx-auto mb-3 opacity-50" />
             <h2 className="text-xl font-semibold">No System Linked</h2>
-            <p className="text-muted-foreground max-w-sm mx-auto mt-2">
+            <p className="opacity-70 max-w-sm mx-auto mt-2">
               We cannot monitor anomalies because no solar unit is assigned to this account yet.
             </p>
         </div>
@@ -55,48 +53,64 @@ const AnomaliesPage = () => {
     <main className="p-8 space-y-8 max-w-7xl mx-auto">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Anomaly Detection</h1>
-        <p className="text-muted-foreground mt-1">
-          Real-time monitoring and issue tracking for <span className="font-mono text-primary bg-primary/10 px-2 py-0.5 rounded">{solarUnit.serialNumber}</span>.
+        <h1 className="text-3xl font-bold tracking-tight">Anomaly Detection</h1>
+        <p className="opacity-70 mt-1">
+          Real-time monitoring and issue tracking for <span className="font-mono font-medium opacity-100">{solarUnit.serialNumber}</span>.
         </p>
       </div>
 
       {/* 1. KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="border-l-4 border-l-red-500 shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
+        
+        {/* Active Issues */}
+        <div className="rounded-xl border shadow-sm border-l-4 border-l-red-500 overflow-hidden">
+            <div className="p-6 flex items-center justify-between">
                 <div>
-                    <p className="text-sm font-medium text-muted-foreground">Active Issues</p>
+                    <p className="text-sm font-medium opacity-70">Active Issues</p>
                     <h3 className="text-3xl font-bold text-red-600">{anomalyData?.summary?.active || 0}</h3>
                 </div>
-                <div className="p-3 bg-red-100 rounded-full"><AlertTriangle className="w-6 h-6 text-red-600" /></div>
-            </CardContent>
-        </Card>
-        <Card className="border-l-4 border-l-yellow-500 shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
+                <div className="p-3 rounded-full bg-red-100/20 text-red-600">
+                    <AlertTriangle className="w-6 h-6" />
+                </div>
+            </div>
+        </div>
+
+        {/* Under Review */}
+        <div className="rounded-xl border shadow-sm border-l-4 border-l-yellow-500 overflow-hidden">
+            <div className="p-6 flex items-center justify-between">
                 <div>
-                    <p className="text-sm font-medium text-muted-foreground">Under Review</p>
+                    <p className="text-sm font-medium opacity-70">Under Review</p>
                     <h3 className="text-3xl font-bold text-yellow-600">{anomalyData?.summary?.review || 0}</h3>
                 </div>
-                <div className="p-3 bg-yellow-100 rounded-full"><Clock className="w-6 h-6 text-yellow-600" /></div>
-            </CardContent>
-        </Card>
-        <Card className="border-l-4 border-l-green-500 shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
+                <div className="p-3 rounded-full bg-yellow-100/20 text-yellow-600">
+                    <Clock className="w-6 h-6" />
+                </div>
+            </div>
+        </div>
+
+        {/* Resolved */}
+        <div className="rounded-xl border shadow-sm border-l-4 border-l-green-500 overflow-hidden">
+            <div className="p-6 flex items-center justify-between">
                 <div>
-                    <p className="text-sm font-medium text-muted-foreground">Resolved</p>
+                    <p className="text-sm font-medium opacity-70">Resolved</p>
                     <h3 className="text-3xl font-bold text-green-600">{anomalyData?.summary?.resolved || 0}</h3>
                 </div>
-                <div className="p-3 bg-green-100 rounded-full"><CheckCircle className="w-6 h-6 text-green-600" /></div>
-            </CardContent>
-        </Card>
+                <div className="p-3 rounded-full bg-green-100/20 text-green-600">
+                    <CheckCircle className="w-6 h-6" />
+                </div>
+            </div>
+        </div>
       </div>
 
       {/* 2. Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-            <CardHeader><CardTitle className="text-base">Anomaly Distribution</CardTitle></CardHeader>
-            <CardContent className="h-[300px]">
+        
+        {/* Distribution Chart */}
+        <div className="rounded-xl border shadow-sm overflow-hidden flex flex-col">
+            <div className="p-6 pb-2 border-b border-opacity-10">
+                <h3 className="font-semibold text-lg">Anomaly Distribution</h3>
+            </div>
+            <div className="p-6 h-[300px]">
                 {anomalyData?.distribution?.length > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
@@ -106,72 +120,103 @@ const AnomaliesPage = () => {
                                 innerRadius={60} outerRadius={80} 
                                 paddingAngle={5} 
                                 dataKey="value"
+                                stroke="none"
                             >
                                 {anomalyData.distribution.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={entry.fill} />
                                 ))}
                             </Pie>
-                            <Tooltip />
-                            <Legend verticalAlign="bottom" height={36}/>
+                            <Tooltip 
+                                contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: '8px', border: 'none', color: '#000' }}
+                            />
+                            <Legend verticalAlign="bottom" />
                         </PieChart>
                     </ResponsiveContainer>
-                ) : <div className="h-full flex items-center justify-center text-muted-foreground text-sm">No anomalies detected</div>}
-            </CardContent>
-        </Card>
+                ) : (
+                    <div className="h-full flex items-center justify-center opacity-50">No anomalies detected</div>
+                )}
+            </div>
+        </div>
 
-        <Card>
-            <CardHeader><CardTitle className="text-base">Daily Trends</CardTitle></CardHeader>
-            <CardContent className="h-[300px]">
+        {/* Trend Chart */}
+        <div className="rounded-xl border shadow-sm overflow-hidden flex flex-col">
+            <div className="p-6 pb-2 border-b border-opacity-10">
+                <h3 className="font-semibold text-lg">Daily Trends</h3>
+            </div>
+            <div className="p-6 h-[300px]">
                 {anomalyData?.trends?.length > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={anomalyData.trends}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                            <XAxis dataKey="date" tickFormatter={(v) => new Date(v).getDate()} fontSize={12} />
-                            <YAxis allowDecimals={false} fontSize={12} />
-                            <Tooltip labelFormatter={(l) => new Date(l).toLocaleDateString()} />
-                            <Bar dataKey="count" fill="#ef4444" radius={[4, 4, 0, 0]} barSize={40} />
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.2} />
+                            <XAxis 
+                                dataKey="date" 
+                                tickFormatter={(v) => new Date(v).getDate()} 
+                                axisLine={false} 
+                                tickLine={false} 
+                                tick={{ opacity: 0.6 }} 
+                            />
+                            <YAxis 
+                                allowDecimals={false} 
+                                axisLine={false} 
+                                tickLine={false} 
+                                tick={{ opacity: 0.6 }} 
+                            />
+                            <Tooltip 
+                                labelFormatter={(l) => new Date(l).toLocaleDateString()}
+                                contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: '8px', border: 'none', color: '#000' }}
+                                cursor={{ fill: 'rgba(0,0,0,0.05)' }}
+                            />
+                            <Bar dataKey="count" fill="#ef4444" radius={[4, 4, 0, 0]} barSize={30} />
                         </BarChart>
                     </ResponsiveContainer>
-                ) : <div className="h-full flex items-center justify-center text-muted-foreground text-sm">No trends available</div>}
-            </CardContent>
-        </Card>
+                ) : (
+                    <div className="h-full flex items-center justify-center opacity-50">No trends available</div>
+                )}
+            </div>
+        </div>
       </div>
 
       {/* 3. Recent Activity List */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base">Recent Anomalies</CardTitle>
-            <TrendingUp className="w-4 h-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
+      <div className="rounded-xl border shadow-sm overflow-hidden flex flex-col">
+        <div className="flex items-center justify-between p-6 pb-4 border-b border-opacity-10">
+            <h3 className="font-semibold text-lg flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 opacity-70" />
+                Recent Anomalies
+            </h3>
+        </div>
+        <div className="p-6">
             <div className="space-y-4">
                 {anomalyData?.recent?.map((item, i) => (
-                    <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border rounded-lg bg-card hover:bg-muted/30 transition-colors gap-4">
+                    <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border rounded-lg hover:opacity-80 transition-opacity gap-4">
                         <div className="flex items-center gap-4">
-                            <div className={`p-2 rounded-full flex-shrink-0 ${item.severity === 'Critical' ? 'bg-red-100 text-red-600' : 'bg-orange-100 text-orange-600'}`}>
+                            <div className={`p-2 rounded-full ${
+                                item.severity === 'Critical' ? 'bg-red-100/20 text-red-600' : 'bg-orange-100/20 text-orange-600'
+                            }`}>
                                 <AlertTriangle className="w-5 h-5" />
                             </div>
                             <div>
-                                <p className="font-medium text-foreground">{item.type}</p>
-                                <p className="text-xs text-muted-foreground">Detected: {new Date(item.time).toLocaleString()}</p>
+                                <p className="font-medium">{item.type}</p>
+                                <p className="text-xs opacity-60">Detected: {new Date(item.time).toLocaleString()}</p>
                             </div>
                         </div>
-                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                            item.severity === 'Critical' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-orange-50 text-orange-700 border-orange-200'
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                            item.severity === 'Critical' ? 'border-red-200 text-red-600 bg-red-50/10' : 
+                            'border-orange-200 text-orange-600 bg-orange-50/10'
                         }`}>
                             {item.severity}
                         </span>
                     </div>
                 ))}
+                
                 {(!anomalyData?.recent || anomalyData.recent.length === 0) && (
-                    <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
-                        <CheckCircle className="w-8 h-8 mb-2 text-green-500 opacity-50" />
+                    <div className="flex flex-col items-center justify-center py-8 opacity-50">
+                        <CheckCircle className="w-8 h-8 mb-2 text-green-500" />
                         <p>System is healthy. No recent anomalies detected.</p>
                     </div>
                 )}
             </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </main>
   );
 };
