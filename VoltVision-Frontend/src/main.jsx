@@ -20,6 +20,8 @@ import ProtectedLayout from "./layouts/protected.layout.jsx";
 import HomePage from "./pages/home/home.page.jsx";
 import SignInPage from "./pages/auth/sign-in-page.jsx";
 import SignUpPage from "./pages/auth/sign-up-page.jsx";
+import Story from "./pages/home/components/HeroSection/Story";
+import ContactUs from "./pages/home/components/HeroSection/ContactUs";
 
 // --- DASHBOARD PAGES ---
 import DashboardPage from "./pages/dashboard/dashboard.page.jsx";
@@ -86,6 +88,8 @@ createRoot(document.getElementById("root")).render(
               <Route path="/sign-up" element={<SignUpPage />} />
               <Route element={<MainLayout />}>
                 <Route path="/" element={<HomePage />} />
+                <Route path="/contact-us" element={<ContactUs />} />
+                <Route path="/our-story" element={<Story />} />
               </Route>
 
               {/* Protected Routes (Require Login) */}
@@ -99,6 +103,8 @@ createRoot(document.getElementById("root")).render(
                   <Route path="/dashboard/anomalies" element={<AnomaliesPage />} />
                   <Route path="/dashboard/analytics" element={<Analytics />} />
                   <Route path="/dashboard/invoices" element={<InvoicesPage />} />
+                  <Route path="/dashboard/invoices/complete" element={<PaymentCompletePage />} />
+                  
                   <Route path="/dashboard/payment/:id" element={<PaymentPage />} />
                   <Route path="/dashboard/invoices/complete" element={<PaymentCompletePage />} />
 

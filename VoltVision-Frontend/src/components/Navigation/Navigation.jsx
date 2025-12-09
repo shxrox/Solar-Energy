@@ -1,8 +1,9 @@
+
 import { useState } from "react";
 import { Link } from "react-router";
 import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
-import { Palette, LayoutDashboard, Menu, X } from "lucide-react";
+import { Palette, LayoutDashboard, Menu, X, Book, Phone } from "lucide-react"; // Added Info, Phone
 import { THEMES } from "@/lib/constants/theme";
 import { useThemeStore } from "@/lib/constants/useThemeStore";
 
@@ -11,6 +12,28 @@ export default function Navigation() {
   const { theme, setTheme } = useThemeStore();
 
   const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+
+  // Helper for Public Links to keep code clean
+  const PublicLinks = ({ mobile = false }) => (
+    <>
+      <Link
+        to="/our-story"
+        onClick={() => mobile && setIsMobileMenuOpen(false)}
+        className={`flex items-center  gap-2 text-sm font-medium  transition-colors ${mobile ? "px-3 py-2 hover:bg-base-200 rounded-md" : ""}`}
+      >
+        <Book className="h-4 w-4" />
+        Our Story
+      </Link>
+      <Link
+        to="/contact-us"
+        onClick={() => mobile && setIsMobileMenuOpen(false)}
+        className={`flex items-center  gap-2 text-sm font-medium transition-colors ${mobile ? "px-3 py-2 hover:bg-base-200 rounded-md" : ""}`}
+      >
+        <Phone className="h-4 w-4" />
+        Contact Us
+      </Link>
+    </>
+  );
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-base-200 bg-base-100/95 backdrop-blur supports-[backdrop-filter]:bg-base-100/60 text-base-content transition-colors duration-300">
@@ -34,7 +57,10 @@ export default function Navigation() {
           {/* --- DESKTOP NAVIGATION (Hidden on Mobile) --- */}
           <div className="hidden md:flex items-center gap-6">
             
-            {/* Theme Dropdown (DaisyUI) */}
+            {/* 1. Public Pages (Visible to Everyone) */}
+            <PublicLinks />
+
+            {/* 2. Theme Dropdown */}
             <div className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="btn btn-ghost btn-circle btn-sm">
                 <Palette className="h-5 w-5" />
@@ -58,7 +84,7 @@ export default function Navigation() {
               </ul>
             </div>
 
-            {/* Dashboard Link */}
+            {/* 3. Dashboard Link (Protected) */}
             <SignedIn>
               <Link
                 to="/dashboard"
@@ -69,7 +95,7 @@ export default function Navigation() {
               </Link>
             </SignedIn>
 
-            {/* Auth Buttons */}
+            {/* 4. Auth Buttons */}
             <div className="flex items-center gap-2 border-l border-base-300 pl-6">
               <SignedOut>
                 <Button asChild variant="ghost" size="sm">
@@ -94,7 +120,7 @@ export default function Navigation() {
 
           {/* --- MOBILE MENU TOGGLE (Visible on Mobile) --- */}
           <div className="flex md:hidden items-center gap-4">
-             {/* Mobile Theme Toggle (Simplified) */}
+             {/* Mobile Theme Toggle */}
              <div className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="btn btn-ghost btn-circle btn-sm">
                 <Palette className="h-5 w-5" />
@@ -117,6 +143,12 @@ export default function Navigation() {
       {isMobileMenuOpen && (
         <div className="md:hidden border-t border-base-200 bg-base-100 px-4 py-6 shadow-lg animate-in slide-in-from-top-5">
           <div className="flex flex-col space-y-4">
+            
+            {/* Public Links in Mobile */}
+            <div className="flex flex-col space-y-2 border-b border-base-200 pb-4">
+                <PublicLinks mobile={true} />
+            </div>
+
             <SignedIn>
               <Link
                 to="/dashboard"
@@ -133,7 +165,7 @@ export default function Navigation() {
             </SignedIn>
 
             <SignedOut>
-              <div className="grid grid-cols-2 gap-4 pt-4">
+              <div className="grid text-black grid-cols-2 gap-4 pt-2">
                 <Button asChild variant="outline" onClick={() => setIsMobileMenuOpen(false)}>
                   <Link to="/sign-in">Sign In</Link>
                 </Button>
