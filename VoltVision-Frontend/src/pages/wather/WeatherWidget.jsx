@@ -1,17 +1,27 @@
 
-import { CloudSun, Sun, Cloud, Wind, Zap, Activity, Battery, Thermometer, Loader2 } from "lucide-react";
+
+import { CloudSun, Sun, Cloud, Wind, Zap, Activity, Battery, Thermometer, Droplets } from "lucide-react";
 import { useGetWeatherQuery } from "@/lib/redux/query";
 
 export default function WeatherWidget({ solarUnit }) {
   const { data: weather, isLoading } = useGetWeatherQuery();
 
-  // --- LOADING STATE ---
+  // --- 1. SKELETON LOADING STATE ---
   if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center min-h-[300px] rounded-xl border border-gray-200  shadow-sm">
-        <div className="flex flex-col items-center gap-2">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-          <span className="text-xs text-gray-500 font-medium">Syncing weather data...</span>
+      <div className="h-full rounded-2xl border border-gray-200 bg-white p-6 shadow-sm flex flex-col gap-6">
+        <div className="flex justify-between items-center">
+          <div className="h-6 w-32 bg-gray-100 rounded animate-pulse" />
+          <div className="h-8 w-24 bg-gray-100 rounded-full animate-pulse" />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="h-24 bg-gray-50 rounded-xl animate-pulse" />
+          <div className="h-24 bg-gray-50 rounded-xl animate-pulse" />
+        </div>
+        <div className="grid grid-cols-3 gap-4 mt-auto">
+          <div className="h-16 bg-gray-50 rounded-xl animate-pulse" />
+          <div className="h-16 bg-gray-50 rounded-xl animate-pulse" />
+          <div className="h-16 bg-gray-50 rounded-xl animate-pulse" />
         </div>
       </div>
     );
@@ -19,124 +29,122 @@ export default function WeatherWidget({ solarUnit }) {
 
   const current = weather?.current;
   
-  // 1. Weather Data
+  // Weather Data
   const temp = current?.temperature_2m || 0;
   const windSpeed = current?.wind_speed_10m || 0;
   const clouds = current?.cloud_cover || 0;
   const isDay = current?.is_day === 1;
 
-  // 2. Solar Data Calculations
-  // Get capacity in kW (default to 0 if unit not loaded yet)
+  // Solar Calculations
   const capacityKW = (solarUnit?.capacity || 0) / 1000;
   
-  // Simple efficiency simulation: Less power if cloudy or night
+  // Efficiency Logic
   let efficiency = 1;
   if (clouds > 50) efficiency = 0.6;
   if (!isDay) efficiency = 0;
+  const efficiencyPercent = (efficiency * 100).toFixed(0);
 
   const realTimePower = (capacityKW * efficiency).toFixed(1);
   const peakPower = capacityKW.toFixed(1);
-  
-  // Mocking Total Energy for display (e.g., Capacity * 5 hours * 30 days)
-  const totalEnergy = (capacityKW * 5 * 30 / 1000).toFixed(2); 
+  const totalEnergy = (capacityKW * 5 * 30 / 1000).toFixed(2); // Est. Monthly MWh
 
-  // Icon & Color Logic
+  // Dynamic Theme Logic
   let WeatherIcon = Sun;
-  let weatherColor = "text-yellow-500";
+  let themeColor = "text-amber-500";
+  let themeBg = "bg-amber-50";
+  let statusText = "Excellent Conditions";
   
-  if (clouds > 20) { WeatherIcon = CloudSun; weatherColor = "text-orange-400"; }
-  if (clouds > 60) { WeatherIcon = Cloud; weatherColor = "text-gray-400"; }
-  if (!isDay) { weatherColor = "text-blue-600"; }
-
-  // Clean, minimal stat item component (Pure Tailwind)
-  const StatItem = ({ label, value, subValue, icon: Icon, iconClass }) => (
-    <div className="flex flex-col justify-between p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-gray-600 hover:border-blue-100 hover:shadow-sm transition-all duration-200 group">
-        <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-black transition-colors">
-              {label}
-            </span>
-            <Icon className={`w-4 h-4 ${iconClass} opacity-80`} />
-        </div>
-        <div>
-            <div className="text-2xl font-bold text-gray-900 tracking-tight">{value}</div>
-            {subValue && (
-              <div className="text-xs  font-medium mt-1">
-                {subValue}
-              </div>
-            )}
-        </div>
-    </div>
-  );
+  if (clouds > 20) { WeatherIcon = CloudSun; themeColor = "text-orange-500"; themeBg = "bg-orange-50"; statusText = "Good Output"; }
+  if (clouds > 60) { WeatherIcon = Cloud; themeColor = "text-slate-500"; themeBg = "bg-slate-50"; statusText = "Low Light"; }
+  if (!isDay) { themeColor = "text-indigo-500"; themeBg = "bg-indigo-50"; statusText = "System Offline"; }
 
   return (
-    // Main Container (Replaces Card)
-    <div className="h-full rounded-xl border border-gray-200  shadow-sm">
+    <div className="h-full rounded-2xl border  shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-shadow duration-300">
       
-      {/* Header (Replaces CardHeader) */}
-      <div className="flex flex-row items-center justify-between p-6 pb-4 border-b border-gray-100">
-        <div className="space-y-1">
-          <h3 className="text-base font-semibold leading-none tracking-tight flex items-center gap-2">
-            <CloudSun className="w-5 h-5 text-blue-600" />
-            Environmental Context
-          </h3>
-          <p className="text-xs text-gray-500">Real-time impact on generation</p>
+      {/* --- HEADER --- */}
+      <div className="px-6 py-5 border-b border-gray-100 flex flex-row items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className={`p-2.5 rounded-xl ${themeBg}`}>
+            <WeatherIcon className={`w-5 h-5 ${themeColor}`} />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold  leading-none">Environmental Context</h3>
+            <p className="text-xs  mt-1">{statusText}</p>
+          </div>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-gray-200 bg-gray-50">
-           <WeatherIcon className={`h-4 w-4 ${weatherColor}`} />
-           <span className="text-xs font-medium text-gray-700">{isDay ? "Daytime" : "Nighttime"}</span>
+        
+        {/* Day/Night Badge */}
+        <div className={`px-3 py-1 rounded-full text-xs font-semibold border ${isDay ? "bg-sky-50 text-sky-700 border-sky-100" : "bg-slate-900 text-slate-300 border-slate-700"}`}>
+           {isDay ? "Daytime" : "Nighttime"}
         </div>
       </div>
       
-      {/* Content (Replaces CardContent) */}
-      <div className="p-6 pt-6">
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Row 1: Weather Factors */}
-            <StatItem 
-                label="Temperature" 
-                value={`${temp}°C`} 
-                subValue="Ambient Air" 
-                icon={Thermometer} 
-                iconClass={weatherColor} 
-            />
-            <StatItem 
-                label="Wind Speed" 
-                value={`${windSpeed} m/s`} 
-                subValue="Panel Cooling" 
-                icon={Wind} 
-                iconClass="text-blue-400" 
-            />
-            <StatItem 
-                label="Cloud Cover" 
-                value={`${clouds}%`} 
-                subValue={clouds > 50 ? "High Coverage" : "Clear Sky"} 
-                icon={Cloud} 
-                iconClass="text-gray-400" 
-            />
+      <div className="p-6 flex flex-col gap-6 flex-1">
+        
+        {/* --- HERO METRICS (Split 50/50) --- */}
+        <div className="grid grid-cols-2 gap-4">
+            
+            {/* 1. Ambient Temp */}
+            <div className="relative overflow-hidden rounded-2xl  from-orange-50 to-white border border-orange-100 p-4 group">
+                <div className="flex justify-between items-start mb-2">
+                    <span className="text-xs font-bold text-orange-600/70 uppercase tracking-wider">Temperature</span>
+                    <Thermometer className="w-4 h-4 text-orange-400 group-hover:scale-110 transition-transform" />
+                </div>
+                <div className="text-3xl font-bold tracking-tight">{temp}°</div>
+                <div className="text-xs  mt-1">Local Ambient</div>
+            </div>
 
-            {/* Row 2: System Performance */}
-            <StatItem 
-                label="Current Output" 
-                value={`${realTimePower} kW`} 
-                subValue={`${(efficiency * 100).toFixed(0)}% Efficiency`} 
-                icon={Zap} 
-                iconClass="text-yellow-500 fill-yellow-500" 
+            {/* 2. Real-Time Output */}
+            <div className="relative overflow-hidden rounded-2xl  from-yellow-50 to-white border border-yellow-100 p-4 group">
+                <div className="flex justify-between items-start mb-2">
+                    <span className="text-xs font-bold text-yellow-600/70 uppercase tracking-wider">Current Output</span>
+                    <Zap className="w-4 h-4 text-yellow-500 fill-yellow-500 group-hover:scale-110 transition-transform" />
+                </div>
+                <div className="flex items-baseline gap-1">
+                    <span className="text-3xl font-bold  tracking-tight">{realTimePower}</span>
+                    <span className="text-sm font-medium ">kW</span>
+                </div>
+                {/* Efficiency Bar */}
+                <div className="mt-3 w-full bg-yellow-100/50 h-1.5 rounded-full overflow-hidden">
+                    <div className="h-full bg-yellow-500 rounded-full transition-all duration-1000" style={{ width: `${efficiencyPercent}%` }} />
+                </div>
+            </div>
+        </div>
+
+        {/* --- SECONDARY METRICS GRID --- */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <MiniStat 
+                icon={Wind} color="text-blue-500" bg="bg-blue-50"
+                label="Wind Speed" value={`${windSpeed} m/s`} 
             />
-             <StatItem 
-                label="System Size" 
-                value={`${peakPower} kW`} 
-                subValue="Rated Capacity" 
-                icon={Activity} 
-                iconClass="text-blue-600" 
+            <MiniStat 
+                icon={Cloud} color="text-slate-500" bg="bg-slate-50"
+                label="Cloud Cover" value={`${clouds}%`} 
             />
-            <StatItem 
-                label="Est. Monthly" 
-                value={`${totalEnergy} MWh`} 
-                subValue="Projected Yield" 
-                icon={Battery} 
-                iconClass="text-green-500" 
+            <MiniStat 
+                icon={Activity} color="text-emerald-500" bg="bg-emerald-50"
+                label="Capacity" value={`${peakPower} kW`} 
+            />
+            <MiniStat 
+                icon={Battery} color="text-purple-500" bg="bg-purple-50"
+                label="Est. MWh" value={totalEnergy} 
             />
         </div>
+
       </div>
     </div>
   );
+}
+
+// Helper: Compact Stat Item
+function MiniStat({ icon: Icon, label, value, color, bg }) {
+    return (
+        <div className="flex flex-col items-center justify-center p-3 rounded-xl border border-gray-50 bg-gray-50/30 hover:bg-slate-900 hover:shadow-sm hover:border-gray-200 transition-all duration-200">
+            <div className={`p-1.5 rounded-lg ${bg} ${color} mb-2`}>
+                <Icon className="w-4 h-4" />
+            </div>
+            <span className="text-sm font-bold ">{value}</span>
+            <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide text-center">{label}</span>
+        </div>
+    );
 }
