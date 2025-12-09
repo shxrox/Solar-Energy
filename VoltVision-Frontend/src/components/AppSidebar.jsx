@@ -61,7 +61,12 @@ const adminItems = [
 // Custom Sidebar Item Component
 const SidebarItem = ({ item, onClick }) => {
   let location = useLocation();
-  const isActive = location.pathname === item.url || location.pathname.startsWith(`${item.url}/`);
+  // const isActive = location.pathname === item.url || location.pathname.startsWith(`${item.url}/`);
+  const isActive =
+  item.url === "/dashboard"
+    ? location.pathname === "/dashboard"
+    : location.pathname === item.url || location.pathname.startsWith(`${item.url}/`);
+
 
   return (
     <li>
