@@ -295,7 +295,7 @@ const AnalyticsPage = () => {
             <CardContent>
                 <div className="space-y-4">
                     {anomalyData?.recent?.map((item, i) => (
-                        <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border rounded-lg bg-card hover:bg-muted/30 transition-colors gap-4">
+                        <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border rounded-lg  hover:bg-muted/30 transition-colors gap-4">
                             <div className="flex items-center gap-4">
                                 <div className={`p-2 rounded-full flex-shrink-0 ${item.severity === 'Critical' ? 'bg-red-100 text-red-600' : 'bg-orange-100 text-orange-600'}`}>
                                     <AlertTriangle className="w-5 h-5" />

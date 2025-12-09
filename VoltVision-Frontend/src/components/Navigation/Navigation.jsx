@@ -88,7 +88,7 @@ export default function Navigation() {
             <SignedIn>
               <Link
                 to="/dashboard"
-                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                className="flex items-center gap-2 text-sm font-medium   transition-colors"
               >
                 <LayoutDashboard className="h-4 w-4" />
                 Dashboard

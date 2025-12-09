@@ -135,7 +135,7 @@ export default function AdminInvoicesPage() {
                         <th className="p-4 text-right">Actions</th>
                     </tr>
                 </thead>
-                <tbody className="divide-y bg-card">
+                <tbody className="divide-y ">
                     {invoices?.map((invoice) => (
                         <tr key={invoice._id} className="hover:bg-muted/5 transition-colors">
                             <td className="p-4 font-mono text-xs text-muted-foreground">

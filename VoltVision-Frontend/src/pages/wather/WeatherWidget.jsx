@@ -1,179 +1,21 @@
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { CloudSun, Sun, CloudRain, Cloud } from "lucide-react";
-// import { useGetWeatherQuery } from "@/lib/redux/query";
 
-// export default function WeatherWidget() {
-//   const { data: weather, isLoading } = useGetWeatherQuery();
-
-//   if (isLoading) return <div>Loading weather...</div>;
-
-//   const current = weather?.current;
-//   const isDay = current?.is_day === 1;
-//   const temp = current?.temperature_2m;
-//   const clouds = current?.cloud_cover;
-
-//   // Simple icon logic
-//   let Icon = Sun;
-//   let statusText = "Excellent for Solar";
-//   let color = "text-yellow-500";
-
-//   if (clouds > 20 && clouds < 60) {
-//     Icon = CloudSun;
-//     statusText = "Good Production";
-//     color = "text-orange-400";
-//   } else if (clouds >= 60) {
-//     Icon = Cloud;
-//     statusText = "Low Production";
-//     color = "text-gray-500";
-//   }
-//   if (!isDay) {
-//      statusText = "Night Time";
-//      color = "text-blue-900";
-//   }
-
-//   return (
-//     <Card>
-//       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-//         <CardTitle className="text-sm font-medium">Live Weather</CardTitle>
-//         <Icon className={`h-4 w-4 ${color}`} />
-//       </CardHeader>
-//       <CardContent>
-//         <div className="text-2xl font-bold">{temp}°C</div>
-//         <p className="text-xs text-muted-foreground">
-//           Cloud Cover: {clouds}%
-//         </p>
-//         <div className={`mt-2 text-sm font-semibold ${color}`}>
-//             {statusText}
-//         </div>
-//       </CardContent>
-//     </Card>
-//   );
-// }
-
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { CloudSun, Sun, CloudRain, Cloud, Wind, Zap, Activity, Battery } from "lucide-react";
-// import { useGetWeatherQuery } from "@/lib/redux/query";
-
-// export default function WeatherWidget({ solarUnit }) {
-//   const { data: weather, isLoading } = useGetWeatherQuery();
-
-//   if (isLoading) return <div className="p-4 text-sm">Loading weather...</div>;
-
-//   const current = weather?.current;
-  
-//   // 1. Weather Data
-//   const temp = current?.temperature_2m || 0;
-//   const windSpeed = current?.wind_speed_10m || 0;
-//   const clouds = current?.cloud_cover || 0;
-//   const isDay = current?.is_day === 1;
-
-//   // 2. Solar Data (Derived from the passed solarUnit prop)
-//   // Note: In a real app, "Real-Time" would come from a live socket. 
-//   // We will estimate based on Capacity and Weather for now.
-//   const capacityKW = (solarUnit?.capacity || 0) / 1000;
-  
-//   // Simple simulation: Less power if cloudy or night
-//   let efficiency = 1;
-//   if (clouds > 50) efficiency = 0.6;
-//   if (!isDay) efficiency = 0;
-
-//   const realTimePower = (capacityKW * efficiency).toFixed(1);
-//   const peakPower = capacityKW.toFixed(1);
-  
-//   // Mocking Total Energy for display (e.g., Capacity * 30 days * 5 hours)
-//   const totalEnergy = (capacityKW * 5 * 30 / 1000).toFixed(1); // GWh placeholder
-
-//   // Determine Icon
-//   let WeatherIcon = Sun;
-//   let color = "text-yellow-500";
-//   if (clouds > 20) { WeatherIcon = CloudSun; color = "text-orange-400"; }
-//   if (clouds > 60) { WeatherIcon = Cloud; color = "text-gray-500"; }
-//   if (!isDay) { color = "text-blue-900"; }
-
-//   // Helper Component for the grid items
-//   const StatItem = ({ label, value, subValue, icon: Icon, iconColor }) => (
-//     <div className="flex flex-col space-y-1 p-3 bg-secondary/20 rounded-lg">
-//         <div className="flex items-center gap-2 text-muted-foreground mb-1">
-//             <Icon className={`w-4 h-4 ${iconColor}`} />
-//             <span className="text-xs font-medium uppercase">{label}</span>
-//         </div>
-//         <div className="text-xl font-bold text-foreground">{value}</div>
-//         {subValue && <div className="text-xs text-muted-foreground">{subValue}</div>}
-//     </div>
-//   );
-
-//   return (
-//     <Card className="col-span-1 md:col-span-2 lg:col-span-2"> {/* Made wider to fit data */}
-//       <CardHeader className="flex flex-row items-center justify-between pb-2">
-//         <CardTitle className="text-base font-semibold">System & Weather Conditions</CardTitle>
-//         <WeatherIcon className={`h-6 w-6 ${color}`} />
-//       </CardHeader>
-      
-//       <CardContent>
-//         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            
-//             {/* Weather Column */}
-//             <StatItem 
-//                 label="Temperature" 
-//                 value={`${temp}°C`} 
-//                 subValue={isDay ? "Daytime" : "Nighttime"}
-//                 icon={WeatherIcon} 
-//                 iconColor={color} 
-//             />
-//             <StatItem 
-//                 label="Wind Speed" 
-//                 value={`${windSpeed} m/s`} 
-//                 subValue="Avg (10 min)"
-//                 icon={Wind} 
-//                 iconColor="text-blue-400" 
-//             />
-
-//             {/* Power Column */}
-//             <StatItem 
-//                 label="Real-Time Power" 
-//                 value={`${realTimePower} kW`} 
-//                 subValue={`${(efficiency * 100).toFixed(0)}% Efficiency`}
-//                 icon={Zap} 
-//                 iconColor="text-yellow-500" 
-//             />
-//              <StatItem 
-//                 label="Peak Power" 
-//                 value={`${peakPower} kW`} 
-//                 subValue="System Capacity"
-//                 icon={Activity} 
-//                 iconColor="text-red-500" 
-//             />
-
-//             {/* Energy Column */}
-//             <StatItem 
-//                 label="Total Energy" 
-//                 value={`${totalEnergy} GWh`} 
-//                 subValue="Lifetime"
-//                 icon={Battery} 
-//                 iconColor="text-green-500" 
-//             />
-//              <StatItem 
-//                 label="Cloud Cover" 
-//                 value={`${clouds}%`} 
-//                 subValue={clouds > 50 ? "High Coverage" : "Clear Sky"}
-//                 icon={Cloud} 
-//                 iconColor="text-gray-400" 
-//             />
-//         </div>
-//       </CardContent>
-//     </Card>
-//   );
-// }
-
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CloudSun, Sun, Cloud, Wind, Zap, Activity, Battery } from "lucide-react";
+import { CloudSun, Sun, Cloud, Wind, Zap, Activity, Battery, Thermometer, Loader2 } from "lucide-react";
 import { useGetWeatherQuery } from "@/lib/redux/query";
 
 export default function WeatherWidget({ solarUnit }) {
   const { data: weather, isLoading } = useGetWeatherQuery();
 
-  if (isLoading) return <div className="p-4 text-sm text-muted-foreground">Loading weather...</div>;
+  // --- LOADING STATE ---
+  if (isLoading) {
+    return (
+      <div className="h-full flex items-center justify-center min-h-[300px] rounded-xl border border-gray-200  shadow-sm">
+        <div className="flex flex-col items-center gap-2">
+          <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+          <span className="text-xs text-gray-500 font-medium">Syncing weather data...</span>
+        </div>
+      </div>
+    );
+  }
 
   const current = weather?.current;
   
@@ -196,84 +38,105 @@ export default function WeatherWidget({ solarUnit }) {
   const peakPower = capacityKW.toFixed(1);
   
   // Mocking Total Energy for display (e.g., Capacity * 5 hours * 30 days)
-  // In a real app, this would come from the database aggregation
-  const totalEnergy = (capacityKW * 5 * 30 / 1000).toFixed(1); 
+  const totalEnergy = (capacityKW * 5 * 30 / 1000).toFixed(2); 
 
-  // Icon Logic
+  // Icon & Color Logic
   let WeatherIcon = Sun;
-  let color = "text-yellow-500";
-  if (clouds > 20) { WeatherIcon = CloudSun; color = "text-orange-400"; }
-  if (clouds > 60) { WeatherIcon = Cloud; color = "text-gray-500"; }
-  if (!isDay) { color = "text-blue-900"; }
+  let weatherColor = "text-yellow-500";
+  
+  if (clouds > 20) { WeatherIcon = CloudSun; weatherColor = "text-orange-400"; }
+  if (clouds > 60) { WeatherIcon = Cloud; weatherColor = "text-gray-400"; }
+  if (!isDay) { weatherColor = "text-blue-600"; }
 
-  // Sub-component for individual stat items
-  const StatItem = ({ label, value, subValue, icon: Icon, iconColor }) => (
-    <div className="flex flex-col space-y-1 p-3 bg-secondary/20 rounded-lg border border-border/50">
-        <div className="flex items-center gap-2 text-muted-foreground mb-1">
-            <Icon className={`w-4 h-4 ${iconColor}`} />
-            <span className="text-[10px] font-bold uppercase tracking-wider">{label}</span>
+  // Clean, minimal stat item component (Pure Tailwind)
+  const StatItem = ({ label, value, subValue, icon: Icon, iconClass }) => (
+    <div className="flex flex-col justify-between p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-gray-600 hover:border-blue-100 hover:shadow-sm transition-all duration-200 group">
+        <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-black transition-colors">
+              {label}
+            </span>
+            <Icon className={`w-4 h-4 ${iconClass} opacity-80`} />
         </div>
-        <div className="text-xl font-bold text-foreground">{value}</div>
-        {subValue && <div className="text-xs text-muted-foreground">{subValue}</div>}
+        <div>
+            <div className="text-2xl font-bold text-gray-900 tracking-tight">{value}</div>
+            {subValue && (
+              <div className="text-xs  font-medium mt-1">
+                {subValue}
+              </div>
+            )}
+        </div>
     </div>
   );
 
   return (
-    <Card className="h-full">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-base font-semibold">Environmental Analysis</CardTitle>
-        <WeatherIcon className={`h-6 w-6 ${color}`} />
-      </CardHeader>
+    // Main Container (Replaces Card)
+    <div className="h-full rounded-xl border border-gray-200  shadow-sm">
       
-      <CardContent>
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-            {/* Weather Stats */}
+      {/* Header (Replaces CardHeader) */}
+      <div className="flex flex-row items-center justify-between p-6 pb-4 border-b border-gray-100">
+        <div className="space-y-1">
+          <h3 className="text-base font-semibold leading-none tracking-tight flex items-center gap-2">
+            <CloudSun className="w-5 h-5 text-blue-600" />
+            Environmental Context
+          </h3>
+          <p className="text-xs text-gray-500">Real-time impact on generation</p>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-gray-200 bg-gray-50">
+           <WeatherIcon className={`h-4 w-4 ${weatherColor}`} />
+           <span className="text-xs font-medium text-gray-700">{isDay ? "Daytime" : "Nighttime"}</span>
+        </div>
+      </div>
+      
+      {/* Content (Replaces CardContent) */}
+      <div className="p-6 pt-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Row 1: Weather Factors */}
             <StatItem 
                 label="Temperature" 
                 value={`${temp}°C`} 
-                subValue={isDay ? "Daytime" : "Nighttime"} 
-                icon={WeatherIcon} 
-                iconColor={color} 
+                subValue="Ambient Air" 
+                icon={Thermometer} 
+                iconClass={weatherColor} 
             />
             <StatItem 
                 label="Wind Speed" 
                 value={`${windSpeed} m/s`} 
-                subValue="Avg (10 min)" 
+                subValue="Panel Cooling" 
                 icon={Wind} 
-                iconColor="text-blue-400" 
+                iconClass="text-blue-400" 
             />
             <StatItem 
                 label="Cloud Cover" 
                 value={`${clouds}%`} 
-                subValue={clouds > 50 ? "Overcast" : "Clear Sky"} 
+                subValue={clouds > 50 ? "High Coverage" : "Clear Sky"} 
                 icon={Cloud} 
-                iconColor="text-gray-400" 
+                iconClass="text-gray-400" 
             />
 
-            {/* Power Stats */}
+            {/* Row 2: System Performance */}
             <StatItem 
-                label="Real-Time Power" 
+                label="Current Output" 
                 value={`${realTimePower} kW`} 
                 subValue={`${(efficiency * 100).toFixed(0)}% Efficiency`} 
                 icon={Zap} 
-                iconColor="text-yellow-500" 
+                iconClass="text-yellow-500 fill-yellow-500" 
             />
              <StatItem 
-                label="Peak Capacity" 
+                label="System Size" 
                 value={`${peakPower} kW`} 
-                subValue="System Max" 
+                subValue="Rated Capacity" 
                 icon={Activity} 
-                iconColor="text-red-500" 
+                iconClass="text-blue-600" 
             />
             <StatItem 
-                label="Total Energy" 
-                value={`${totalEnergy} GWh`} 
-                subValue="Lifetime Est." 
+                label="Est. Monthly" 
+                value={`${totalEnergy} MWh`} 
+                subValue="Projected Yield" 
                 icon={Battery} 
-                iconColor="text-green-500" 
+                iconClass="text-green-500" 
             />
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
