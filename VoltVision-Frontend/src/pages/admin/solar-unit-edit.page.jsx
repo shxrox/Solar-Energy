@@ -1,52 +1,10 @@
-// import { useGetSolarUnitByIdQuery } from "@/lib/redux/query";
-// import { useNavigate, useParams } from "react-router";
-// import { EditSolarUnitForm } from "./components/EditSolarUnitForm";
-
-// export default function SolarUnitEditPage() {
-//   const { id } = useParams();
-//   const navigate = useNavigate();
-
-//   const { data: solarUnit, isLoading: isLoadingSolarUnit, isError: isErrorSolarUnit, error: errorSolarUnit } = useGetSolarUnitByIdQuery(id);
-  
-//   console.log(solarUnit);
-
-//   if (isLoadingSolarUnit) {
-//     return <div>Loading...</div>;
-//   }
-
-//   if (isErrorSolarUnit) {
-//     return <div>Error: {errorSolarUnit.message}</div>;
-//   }
-
-//   const handleEdit = () => {
-//     // TODO: Navigate to edit page
-//     console.log("Edit solar unit:", solarUnit._id);
-//   };
-
-//   const handleDelete = () => {
-//     // TODO: Implement delete with confirmation
-//     console.log("Delete solar unit:", solarUnit._id);
-//   };
-
-//   return (
-//     <main className="mt-4">
-//       <h1 className="text-4xl font-bold text-foreground">Edit Solar Unit</h1>
-//       <h2 className="mt-4 text-2xl font-bold text-foreground">{solarUnit.serialNumber}</h2>
-//       <p className="text-gray-600 mt-2">Edit the details of the solar unit</p>'
-      
-//       <div className="mt-8">
-//         <EditSolarUnitForm solarUnit={solarUnit} />
-        
-//       </div>
-//     </main>
-//   );
-// }
-
 
 import { useGetSolarUnitByIdQuery } from "@/lib/redux/query";
-import { useParams, Link } from "react-router"; // Combined imports
+import { useParams, Link } from "react-router"; 
 import { EditSolarUnitForm } from "./components/EditSolarUnitForm";
 import { Settings, ArrowLeft, Loader2, AlertCircle } from "lucide-react";
+import { toast } from "react-toastify"; 
+import { useEffect } from "react";       
 
 export default function SolarUnitEditPage() {
   const { id } = useParams();
@@ -57,7 +15,22 @@ export default function SolarUnitEditPage() {
     isError, 
     error 
   } = useGetSolarUnitByIdQuery(id);
-  
+
+  // ✅ Toast side effects (won't repeat endlessly)
+  useEffect(() => {
+    if (isLoading) {
+      toast.info("Loading unit details...");
+    }
+
+    if (isError) {
+      toast.error(error?.message || "Failed to load solar unit");
+    }
+
+    if (solarUnit) {
+      toast.success("Solar unit loaded successfully");
+    }
+  }, [isLoading, isError, solarUnit, error]);
+
   // --- LOADING STATE ---
   if (isLoading) {
     return (
@@ -93,8 +66,6 @@ export default function SolarUnitEditPage() {
   // --- MAIN CONTENT ---
   return (
     <main className="p-4 md:p-8 space-y-8 max-w-5xl mx-auto pb-20 animate-in fade-in duration-500">
-      
-      {/* --- HEADER --- */}
       <div className="flex flex-col gap-4">
         <Link 
           to="/admin/solar-units" 
@@ -103,7 +74,7 @@ export default function SolarUnitEditPage() {
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           Back to List
         </Link>
-        
+
         <div>
           <h1 className="text-3xl font-bold tracking-tight  flex items-center gap-3">
             <div className="p-2 rounded-lg">
@@ -113,20 +84,18 @@ export default function SolarUnitEditPage() {
           </h1>
           <div className="ml-12 mt-1">
             <h2 className="text-xl font-semibold opacity-90 font-mono">
-                {solarUnit.serialNumber}
+              {solarUnit.serialNumber}
             </h2>
             <p className="text-sm opacity-60">
-                Modify configuration details and operational status.
+              Modify configuration details and operational status.
             </p>
           </div>
         </div>
       </div>
 
-      {/* --- FORM SECTION --- */}
       <div className="mt-8 p-1">
         <EditSolarUnitForm solarUnit={solarUnit} />
       </div>
-      
     </main>
   );
 }

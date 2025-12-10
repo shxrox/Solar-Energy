@@ -1,182 +1,8 @@
-// import { useParams, useNavigate } from "react-router";
-// import { Card } from "@/components/ui/card";
-// import { Button } from "@/components/ui/button";
-// import { Separator } from "@/components/ui/separator";
-// import { ArrowLeft, Zap, Calendar, Gauge, Activity } from "lucide-react";
-// import { format } from "date-fns";
-// import { useGetSolarUnitByIdQuery } from "@/lib/redux/query";
-
-// export default function SolarUnitDetailPage() {
-//   const { id } = useParams();
-//   const navigate = useNavigate();
-
-//   const { data: solarUnit, isLoading: isLoadingSolarUnit, isError: isErrorSolarUnit, error: errorSolarUnit } = useGetSolarUnitByIdQuery(id);
-  
-//   if (isLoadingSolarUnit) {
-//     return <div>Loading...</div>;
-//   }
-
-//   if (isErrorSolarUnit) {
-//     return <div>Error: {errorSolarUnit.message}</div>;
-//   }
-
-//   const handleEdit = () => {
-//     navigate(`/admin/solar-units/${solarUnit._id}/edit`);
-//   };
-
-//   const handleDelete = () => {
-//     // TODO: Implement delete with confirmation
-//     console.log("Delete solar unit:", solarUnit._id);
-//   };
-
-//   return (
-//     <main className="mt-4">
-//       <div className="flex items-center gap-4 mb-6">
-//         <Button
-//           variant="outline"
-//           size="sm"
-//           onClick={() => navigate("/admin/solar-units")}
-//           className="gap-2"
-//         >
-//           <ArrowLeft className="w-4 h-4" />
-//           Back
-//         </Button>
-//         <h1 className="text-4xl font-bold text-foreground">
-//           {solarUnit.serialNumber}
-//         </h1>
-//       </div>
-
-//       <p className="text-gray-600 mb-8">
-//         View and manage solar unit details and performance
-//       </p>
-
-//       <div className="grid gap-6 lg:grid-cols-3">
-//         {/* Main Details */}
-//         <div className="lg:col-span-2 space-y-6">
-//           {/* Status Card */}
-//           <Card className="p-6">
-//             <div className="flex items-center justify-between mb-4">
-//               <h2 className="text-xl font-semibold text-foreground">Status</h2>
-//               <div
-//                 className={`px-4 py-2 rounded-full text-sm font-medium ${
-//                   solarUnit.status === "ACTIVE"
-//                     ? "bg-green-100 text-green-800"
-//                     : "bg-gray-100 text-gray-800"
-//                 }`}
-//               >
-//                 {solarUnit.status}
-//               </div>
-//             </div>
-//             <Separator className="my-4" />
-//             <p className="text-muted-foreground">
-//               {solarUnit.status === "ACTIVE"
-//                 ? "This solar unit is currently operational and generating energy."
-//                 : "This solar unit is currently inactive."}
-//             </p>
-//           </Card>
-
-//           {/* Technical Specifications */}
-//           <Card className="p-6">
-//             <h2 className="text-xl font-semibold text-foreground mb-4">
-//               Technical Specifications
-//             </h2>
-//             <Separator className="my-4" />
-
-//             <div className="grid md:grid-cols-2 gap-6">
-//               <div>
-//                 <div className="flex items-center gap-2 mb-2">
-//                   <Gauge className="w-5 h-5 text-blue-500" />
-//                   <p className="text-sm text-muted-foreground">Capacity</p>
-//                 </div>
-//                 <p className="text-2xl font-bold text-foreground">
-//                   {(solarUnit.capacity / 1000).toFixed(1)} kW
-//                 </p>
-//               </div>
-
-//               <div>
-//                 <div className="flex items-center gap-2 mb-2">
-//                   <Zap className="w-5 h-5 text-yellow-500" />
-//                   <p className="text-sm text-muted-foreground">Serial Number</p>
-//                 </div>
-//                 <p className="text-2xl font-bold text-foreground font-mono">
-//                   {solarUnit.serialNumber}
-//                 </p>
-//               </div>
-//             </div>
-//           </Card>
-
-//           {/* Installation Information */}
-//           <Card className="p-6">
-//             <h2 className="text-xl font-semibold text-foreground mb-4">
-//               Installation Information
-//             </h2>
-//             <Separator className="my-4" />
-
-//             <div className="space-y-4">
-//               <div>
-//                 <div className="flex items-center gap-2 mb-2">
-//                   <Calendar className="w-5 h-5 text-purple-500" />
-//                   <p className="text-sm text-muted-foreground">
-//                     Installation Date
-//                   </p>
-//                 </div>
-//                 <p className="text-lg font-semibold text-foreground">
-//                   {format(new Date(solarUnit.installationDate), "MMMM d, yyyy")}
-//                 </p>
-//               </div>
-
-//               <div>
-//                 <p className="text-sm text-muted-foreground mb-1">Unit ID</p>
-//                 <p className="text-sm font-mono text-foreground">
-//                   {solarUnit._id}
-//                 </p>
-//               </div>
-
-//               <div>
-//                 <p className="text-sm text-muted-foreground mb-1">User ID</p>
-//                 <p className="text-sm font-mono text-foreground">
-//                   {solarUnit.userId ?? "No User Assigned"}
-//                 </p>
-//               </div>
-//             </div>
-//           </Card>
-//         </div>
-
-//         {/* Actions Sidebar */}
-//         <div>
-//           <Card className="p-6 sticky top-4">
-//             <h3 className="font-semibold text-foreground mb-4">Actions</h3>
-//             <div className="space-y-3">
-//               <Button onClick={handleEdit} className="w-full">
-//                 Edit Details
-//               </Button>
-//               <Button variant="outline" className="w-full">
-//                 View Performance
-//               </Button>
-//               <Button
-//                 variant="outline"
-//                 onClick={handleDelete}
-//                 className="w-full text-red-600 hover:text-red-700"
-//               >
-//                 Delete Unit
-//               </Button>
-//             </div>
-//           </Card>
-//         </div>
-//       </div>
-//     </main>
-//   );
-// }
-
 
 
 import { useParams, useNavigate } from "react-router";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Zap, Calendar, Gauge } from "lucide-react";
+import { ArrowLeft, Zap, Calendar, Gauge, Loader2, AlertCircle, Trash2, Edit, Activity } from "lucide-react";
 import { format } from "date-fns";
-// ✅ Import the new delete mutation hook here
 import { useGetSolarUnitByIdQuery, useDeleteSolarUnitMutation } from "@/lib/redux/query";
 
 export default function SolarUnitDetailPage() {
@@ -194,12 +20,33 @@ export default function SolarUnitDetailPage() {
   // 2. Initialize the Delete Mutation
   const [deleteSolarUnit, { isLoading: isDeleting }] = useDeleteSolarUnitMutation();
 
+  // --- LOADING STATE ---
   if (isLoadingSolarUnit) {
-    return <div className="p-8">Loading solar unit details...</div>;
+    return (
+      <div className="flex h-[50vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-2">
+            <Loader2 className="h-8 w-8 animate-spin opacity-50" />
+            <p className="text-sm opacity-60 font-medium">Loading unit details...</p>
+        </div>
+      </div>
+    );
   }
 
+  // --- ERROR STATE ---
   if (isErrorSolarUnit) {
-    return <div className="p-8 text-red-500">Error: {errorSolarUnit.message}</div>;
+    return (
+      <div className="p-8 flex justify-center">
+        <div className="max-w-lg w-full rounded-lg border border-opacity-20 p-4 shadow-sm flex items-start gap-3">
+          <AlertCircle className="h-5 w-5 mt-0.5 shrink-0 opacity-80" />
+          <div>
+            <h3 className="font-semibold text-sm">Error loading unit</h3>
+            <div className="text-xs mt-1 opacity-70">
+              {errorSolarUnit?.message || "Please check your connection."}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const handleEdit = () => {
@@ -228,142 +75,157 @@ export default function SolarUnitDetailPage() {
   };
 
   return (
-    <main className="mt-4">
-      <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="outline"
-          size="sm"
+    <main className="p-4 md:p-8 space-y-8 max-w-5xl mx-auto pb-20 animate-in fade-in duration-500">
+      
+      {/* --- HEADER --- */}
+      <div className="flex flex-col gap-4">
+        <button
           onClick={() => navigate("/admin/solar-units")}
-          className="gap-2"
+          className="flex items-center gap-2 text-sm opacity-60 hover:opacity-100 transition-opacity w-fit group"
         >
-          <ArrowLeft className="w-4 h-4" />
-          Back
-        </Button>
-        <h1 className="text-4xl font-bold text-foreground">
-          {solarUnit.serialNumber}
-        </h1>
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          Back to Fleet
+        </button>
+        
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
+              {solarUnit.serialNumber}
+            </h1>
+            <p className="opacity-60 mt-1">
+                Unit ID: <span className="font-mono text-xs opacity-80">{solarUnit._id}</span>
+            </p>
+          </div>
+          
+          {/* Status Badge - Using borders and opacity instead of colors */}
+          <div className="px-4 py-2 rounded-full border border-opacity-20 flex items-center gap-2 font-medium text-sm w-fit">
+              <div className={`w-2 h-2 rounded-full ${solarUnit.status === 'ACTIVE' ? 'bg-current opacity-100 animate-pulse' : 'bg-current opacity-40'}`} />
+              <span className="opacity-90">{solarUnit.status}</span>
+          </div>
+        </div>
       </div>
 
-      <p className="text-gray-600 mb-8">
-        View and manage solar unit details and performance
-      </p>
-
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Main Details Column */}
+        {/* --- LEFT COLUMN: INFO CARDS --- */}
         <div className="lg:col-span-2 space-y-6">
           
-          {/* Status Card */}
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-foreground">Status</h2>
-              <div
-                className={`px-4 py-2 rounded-full text-sm font-medium ${
-                  solarUnit.status === "ACTIVE"
-                    ? "bg-green-100 text-green-800"
-                    : "bg-gray-100 text-gray-800"
-                }`}
-              >
-                {solarUnit.status}
-              </div>
+          {/* Status & Health */}
+          <div className="rounded-xl border border-current border-opacity-10 p-6 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 rounded-lg bg-current">
+                    <Activity className="h-5 w-5 " />
+                </div>
+                <h2 className="text-lg font-semibold ">System Status</h2>
             </div>
-            <Separator className="my-4" />
-            <p className="text-muted-foreground">
+            <div className="h-px w-full bg-current opacity-10 mb-4" />
+            <p className="opacity-70 leading-relaxed text-sm">
               {solarUnit.status === "ACTIVE"
-                ? "This solar unit is currently operational and generating energy."
-                : "This solar unit is currently inactive."}
+                ? "This solar unit is currently operational and generating energy. Real-time telemetry is active."
+                : "This solar unit is currently flagged as inactive or in maintenance mode. Check physical connections."}
             </p>
-          </Card>
+          </div>
 
           {/* Technical Specifications */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold text-foreground mb-4">
-              Technical Specifications
-            </h2>
-            <Separator className="my-4" />
+          <div className="rounded-xl border border-current border-opacity-10 p-6 shadow-sm">
+            <h2 className="text-lg font-semibold opacity-90 mb-4">Technical Specifications</h2>
+            <div className="h-px w-full bg-current opacity-10 mb-6" />
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Gauge className="w-5 h-5 text-blue-500" />
-                  <p className="text-sm text-muted-foreground">Capacity</p>
+                <div className="flex items-center gap-2 mb-2 opacity-60">
+                  <Gauge className="w-4 h-4" />
+                  <span className="text-sm font-medium uppercase tracking-wide">Capacity</span>
                 </div>
-                <p className="text-2xl font-bold text-foreground">
-                  {(solarUnit.capacity / 1000).toFixed(1)} kW
+                <p className="text-3xl font-bold">
+                  {(solarUnit.capacity / 1000).toFixed(1)} <span className="text-lg font-normal opacity-50">kW</span>
                 </p>
               </div>
 
               <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Zap className="w-5 h-5 text-yellow-500" />
-                  <p className="text-sm text-muted-foreground">Serial Number</p>
+                <div className="flex items-center gap-2 mb-2 ">
+                  <Zap className="w-4 h-4" />
+                  <span className="text-sm font-medium uppercase tracking-wide">Serial Number</span>
                 </div>
-                <p className="text-2xl font-bold text-foreground font-mono">
+                <p className="text-xl font-bold font-mono   p-2 rounded-md inline-block">
                   {solarUnit.serialNumber}
                 </p>
               </div>
             </div>
-          </Card>
+          </div>
 
           {/* Installation Information */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold text-foreground mb-4">
-              Installation Information
-            </h2>
-            <Separator className="my-4" />
+          <div className="rounded-xl border border-current border-opacity-10 p-6 shadow-sm">
+            <h2 className="text-lg font-semibold opacity-90 mb-4">Installation Details</h2>
+            <div className="h-px w-full  opacity-10 mb-6" />
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="w-5 h-5 text-purple-500" />
-                  <p className="text-sm text-muted-foreground">
-                    Installation Date
-                  </p>
+                <div className="flex items-center gap-2 mb-2 opacity-60">
+                  <Calendar className="w-4 h-4" />
+                  <span className="text-sm font-medium uppercase tracking-wide">Installation Date</span>
                 </div>
-                <p className="text-lg font-semibold text-foreground">
+                <p className="text-lg font-medium opacity-90">
                   {format(new Date(solarUnit.installationDate), "MMMM d, yyyy")}
                 </p>
               </div>
 
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Unit ID</p>
-                <p className="text-sm font-mono text-foreground">
-                  {solarUnit._id}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">User ID</p>
-                <p className="text-sm font-mono text-foreground">
-                  {solarUnit.userId ?? "No User Assigned"}
-                </p>
+              <div className="grid md:grid-cols-2 gap-4 pt-2">
+                <div className="p-3  rounded-lg border border-current border-opacity-5">
+                    <p className="text-xs opacity-50 uppercase tracking-wider mb-1">Assigned User ID</p>
+                    <p className="text-xs font-mono opacity-80 break-all">
+                        {solarUnit.userId ? (typeof solarUnit.userId === 'object' ? solarUnit.userId._id : solarUnit.userId) : "No User Assigned"}
+                    </p>
+                </div>
+                <div className="p-3  rounded-lg border border-current border-opacity-5">
+                     <p className="text-xs opacity-50 uppercase tracking-wider mb-1">System ID</p>
+                    <p className="text-xs font-mono opacity-80 break-all">
+                        {solarUnit._id}
+                    </p>
+                </div>
               </div>
             </div>
-          </Card>
+          </div>
         </div>
 
-        {/* Actions Sidebar */}
+        {/* --- RIGHT COLUMN: ACTIONS --- */}
         <div>
-          <Card className="p-6 sticky top-4">
-            <h3 className="font-semibold text-foreground mb-4">Actions</h3>
+          <div className="sticky top-24 rounded-xl border border-current border-opacity-10 p-6 shadow-lg">
+            <h3 className="font-bold opacity-90 mb-6 flex items-center gap-2">
+                <div className="w-1 h-5  rounded-full opacity-50" />
+                Actions
+            </h3>
+            
             <div className="space-y-3">
-              <Button onClick={handleEdit} className="w-full">
-                Edit Details
-              </Button>
-              <Button variant="outline" className="w-full">
-                View Performance
-              </Button>
+              <button 
+                onClick={handleEdit} 
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg   font-medium hover:opacity-90 transition-opacity shadow-sm"
+                style={{ color: 'var(--fallback-b1,oklch(var(--b1)))' }} // Invert text color based on background
+              >
+                <Edit className="w-4 h-4" /> Edit Details
+              </button>
               
-              {/* Delete Button with Loading State */}
-              <Button
-                variant="outline"
+           
+          
+              
+              <div className="h-px w-full bg-current opacity-10 my-2" />
+
+              <button
                 onClick={handleDelete}
                 disabled={isDeleting} 
-                className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-red-500/30 text-red-500 hover:bg-red-500/10 transition-colors font-medium text-sm"
               >
-                {isDeleting ? "Deleting..." : "Delete Unit"}
-              </Button>
+                {isDeleting ? (
+                    <>
+                        <Loader2 className="w-4 h-4 animate-spin" /> Deleting...
+                    </>
+                ) : (
+                    <>
+                        <Trash2 className="w-4 h-4" /> Delete Unit
+                    </>
+                )}
+              </button>
             </div>
-          </Card>
+          </div>
         </div>
       </div>
     </main>
