@@ -3,3 +3,11 @@ https://manupa.notion.site/Final-Project-Specification-2bea93edaaa780ff8002e86c0
 https://fed-4-frontend.netlify.app/dashboard
 
 .\stripe.exe listen --forward-to localhost:8000/api/stripe/webhook
+
+fetch("http://localhost:8000/api/invoices/generate", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${await window.Clerk.session.getToken()}`
+  }
+}).then(r => r.json()).then(console.log).catch(console.error);
