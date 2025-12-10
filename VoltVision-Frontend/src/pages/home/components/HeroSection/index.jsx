@@ -28,9 +28,9 @@ export default function HeroSection() {
           
           {/* Text Content */}
           <div     data-aos="fade-right"
-    data-aos-offset="100"
+    data-aos-offset="80"
     data-aos-delay="20"
-    data-aos-duration="800"
+    data-aos-duration="600"
     data-aos-easing="ease-in-out"
     data-aos-mirror="true"
     data-aos-once="false"
