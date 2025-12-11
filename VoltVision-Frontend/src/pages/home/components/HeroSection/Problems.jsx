@@ -72,7 +72,7 @@ export default function Problems() {
             {/* Main Image Container */}
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-base-200 group h-[500px]">
               <img
-                src="../public/assets/images/home4.avif"
+                src="../public/assets/images/home4.jpg"
                 alt="Solar Panels Maintenance"
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-105"
               />

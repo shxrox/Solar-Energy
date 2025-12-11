@@ -12,8 +12,8 @@ export default function Solution() {
             {/* Main Image Container */}
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-base-200 group h-[500px]">
               <img
-                src="../public/assets/images/home5.avif"
-                alt="Solar Dashboard Mobile App"
+                src="../public/assets/images/home5.jpg"
+                alt="Solar Dashboard"
                 className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />

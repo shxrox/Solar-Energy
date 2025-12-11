@@ -115,7 +115,7 @@ export default function SolarEnergyProduction() {
             >
                <img 
                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                 src="../public/assets/images/home3.avif" 
+                 src="../public/assets/images/home3.jpg" 
                  alt="Solar Roof Installation" 
                />
                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4">
