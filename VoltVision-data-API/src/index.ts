@@ -1,3 +1,6 @@
+
+
+
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
@@ -8,7 +11,9 @@ import { connectDB } from "./infrastructure/db";
 import { initializeEnergyCron } from "./infrastructure/energy-generation-cron";
 
 const server = express();
-server.use(cors({ origin: "http://localhost:5173" }));
+
+
+server.use(cors()); 
 
 server.use(loggerMiddleware);
 
@@ -21,7 +26,8 @@ server.use(globalErrorHandler);
 connectDB();
 initializeEnergyCron();
 
+// ✅ Correct Port Logic for Render
 const PORT = process.env.PORT || 8001;
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Data API Server is running on port ${PORT}`);
 });

@@ -4,7 +4,6 @@
   "main": "src/index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    
     "dev:ngrok": "ngrok start api --config=ngrok.yml",
     "seed": "ts-node src/infrastructure/seed.ts",
     "build": "npm install && tsc",
