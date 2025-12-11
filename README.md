@@ -8,6 +8,10 @@ Comprehensive monorepo for the VoltVision solar energy project. This repository 
 
 This README describes the project structure, environment variables, development setup, and useful scripts for each service.
 
+**Live Demo**
+
+Frontend deployment: [https://volt-vision.netlify.app/](https://volt-vision.netlify.app/)
+
 **Repository Structure**
 
 - `VoltVision-Backend/` — Server handling users, solar units, invoices, payments, analytics, background sync, and webhooks.
@@ -20,7 +24,7 @@ Prerequisites:
 
 - Node.js 18+ (or the version set in each service `package.json`).
 - npm or yarn.
-- A local PostgreSQL (or the DB configured in each service `infrastructure/db.ts`).
+- MongoDB (local or cloud instance via MongoDB Atlas).
 - Optional: `ngrok` for exposing local servers to the internet when testing webhooks.
 
 General pattern to run each service locally:
@@ -30,10 +34,10 @@ General pattern to run each service locally:
 3. Install dependencies: `npm install`.
 4. Run in dev mode: `npm run dev` or `npm run start:dev` (see each `package.json`).
 
-Example commands (PowerShell):
+Example commands:
 
-```powershell
-cd "c:\Users\sharo\OneDrive\Desktop\StemLink\final project\VoltVision-Backend"
+```bash
+cd VoltVision-Backend
 npm install
 npm run dev
 ```
@@ -42,25 +46,27 @@ Repeat for `VoltVision-data-API` and `VoltVision-Frontend` (frontend typically u
 
 **Environment variables**
 
-Each service keeps its env variables in a `.env` file at the service root. Common variables to expect:
+Each service keeps its env variables in a `.env` file at the service root. Common variables:
 
 - `PORT` — server port
-- `DATABASE_URL` or DB host/user/password/port/dbname — connection for PostgreSQL
-- `JWT_SECRET` — secret used for authentication tokens
+- `MONGODB_URL` — MongoDB connection string (local or MongoDB Atlas)
 - `NODE_ENV` — `development` | `production`
-- `STRIPE_SECRET_KEY` / payment provider keys (for payments)
-- `NGROK_AUTH_TOKEN` / local callback URLs (when using ngrok for webhooks)
+- `CLERK_SECRET_KEY` — Clerk authentication secret
+- `CLERK_PUBLISHABLE_KEY` — Clerk publishable key (frontend)
+- `STRIPE_SECRET_KEY` — Stripe secret key for payment processing
+- `STRIPE_PUBLISHABLE_KEY` — Stripe publishable key (frontend)
+- `NGROK_AUTH_TOKEN` — ngrok authentication token (optional, for webhook testing)
 
-Open the service `src` folder and `infrastructure/db.ts` to confirm exact variable names. The repo already contains `.env` in service folders which can be used as reference.
+Refer to the `.env` files in each service folder for specific variable names and values.
 
 **Database & Seeding**
 
-- Both backend services include `infrastructure/seed.ts` (or similar) to seed sample data. Run the seed script after connecting to the DB.
+- Both backend services include `infrastructure/seed.ts` (or similar) to seed sample data. Run the seed script after connecting to MongoDB.
 
-Example (PowerShell):
+Example:
 
-```powershell
-cd "c:\Users\sharo\OneDrive\Desktop\StemLink\final project\VoltVision-Backend"
+```bash
+cd VoltVision-Backend
 npm run seed
 ```
 
@@ -84,11 +90,11 @@ Start these with the service (some are automatically started by the main server)
 
 Example:
 
-```powershell
-ngrok http 3000 --config "c:\Users\sharo\OneDrive\Desktop\StemLink\final project\VoltVision-Backend\ngrok.yml"
+```bash
+ngrok http 3000 --config ./ngrok.yml
 ```
 
-Replace `3000` with your `PORT` value.
+Replace `3000` with your `PORT` value and adjust the ngrok config path as needed.
 
 **Testing & Linting**
 
@@ -111,19 +117,5 @@ Replace `3000` with your `PORT` value.
 - If the server fails to connect to the database, ensure `DATABASE_URL`/DB env vars are correct and the DB is accepting connections from your host.
 - If a port is in use, change `PORT` in the `.env` file.
 
-**Contact / Authors**
 
-This repository was prepared as part of the VoltVision project. For questions, open an issue or contact the maintainers listed in the repository metadata.
 
-**License**
-
-Specify a license in the repository root (e.g., `LICENSE` file). If none is present, add one (MIT or similar) or ask the project owner which license to use.
-
----
-
-If you want, I can:
-
-- Add service-specific environment variable examples (`.env.example`) for each service.
-- Add quick `scripts` examples to each `package.json` to standardize dev/start/seed commands.
-
-Tell me which follow-up you'd like and I'll implement it.
