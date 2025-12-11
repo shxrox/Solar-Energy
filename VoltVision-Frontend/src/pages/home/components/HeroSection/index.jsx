@@ -86,7 +86,7 @@ export default function HeroSection() {
                 {/* Main Image */}
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-base-100 rotate-2 hover:rotate-0 transition-transform duration-500">
                     <img 
-                        src="../public/assets/images/home.jpg" 
+                        src="/assets/images/home.jpg" 
                         alt="Solar Panels on Roof" 
                         className="w-full h-auto object-cover transform scale-105 hover:scale-110 transition-transform duration-700"
                     />

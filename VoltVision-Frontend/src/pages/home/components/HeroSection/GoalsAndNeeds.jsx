@@ -84,7 +84,7 @@ export default function GoalsAndNeeds() {
               <div className="flex items-center gap-4 relative z-10">
                 <div className="h-14 w-14 rounded-full overflow-hidden border-2 border-primary/20">
                   <img
-                    src="../public/assets/images/profile.jpg"
+                    src="/assets/images/profile.jpg"
                     alt="Kumaru P."
                     className="h-full w-full object-cover"
                   />
@@ -110,7 +110,7 @@ export default function GoalsAndNeeds() {
             <div className="relative h-full w-full rounded-3xl overflow-hidden shadow-2xl border-4 border-base-100 group">
               <img
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                src="../public/assets/images/home.jpg"
+                src="/assets/images/home.jpg"
                 alt="Solar Panel Installation"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />

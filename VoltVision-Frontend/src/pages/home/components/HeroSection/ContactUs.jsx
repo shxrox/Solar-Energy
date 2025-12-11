@@ -72,7 +72,7 @@ export default function ContactUs() {
             {/* Map Placeholder */}
             <div className="relative h-64 w-full rounded-2xl overflow-hidden shadow-lg border border-base-300 group">
                 <img 
-                    src="../public/assets/images/srilanka.jpg" 
+                    src="/assets/images/srilanka.jpg" 
                     alt="Colombo Map Location" 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />

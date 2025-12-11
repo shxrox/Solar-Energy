@@ -39,7 +39,7 @@ export default function SolarEnergyProduction() {
             <div className="relative z-10 overflow-hidden rounded-3xl shadow-2xl border-4 border-base-100 h-[400px] lg:h-[600px] group">
               <img 
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                src="../public/assets/images/home2.jpg" 
+                src="/assets/images/home2.jpg" 
                 alt="Solar Array in Field" 
               />
               <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
@@ -115,7 +115,7 @@ export default function SolarEnergyProduction() {
             >
                <img 
                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                 src="../public/assets/images/home3.jpg" 
+                 src="/assets/images/home3.jpg" 
                  alt="Solar Roof Installation" 
                />
                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4">

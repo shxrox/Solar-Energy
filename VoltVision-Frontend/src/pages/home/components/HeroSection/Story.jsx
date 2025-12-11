@@ -34,7 +34,7 @@ export default function Story() {
             <div className="relative" data-aos="fade-right" data-aos-duration="1000">
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-base-200 rotate-2 hover:rotate-0 transition-transform duration-500">
                 <img 
-                  src="../public/assets/images/srilanka.jpg" 
+                  src="/assets/images/srilanka.jpg" 
                   alt="Sri Lanka Sigiriya" 
                   className="w-full h-[500px] object-cover"
                 />
@@ -88,7 +88,7 @@ export default function Story() {
           >
             {/* Background Map Image */}
             <img 
-              src="../public/assets/images/map.jpg" 
+              src="/assets/images/map.jpg" 
               alt="Sri Lanka Landscape"
               className="absolute inset-0 w-full h-full object-cover opacity-30"
             />

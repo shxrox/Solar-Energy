@@ -12,7 +12,7 @@ export default function Solution() {
             {/* Main Image Container */}
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-base-200 group h-[500px]">
               <img
-                src="../public/assets/images/home5.jpg"
+                src="/assets/images/home5.jpg"
                 alt="Solar Dashboard"
                 className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
               />
