@@ -12,7 +12,9 @@ This README describes the project structure, environment variables, development 
 
 **Live Demo**
 
-Frontend deployment: [https://volt-vision.netlify.app/](https://volt-vision.netlify.app/)
+Frontend deployment: [https://volt-visions.netlify.app/](https://volt-visions.netlify.app/)
+Backend deployment: [https://backend-6fd8.onrender.com](https://backend-6fd8.onrender.com)
+Data API: [https://solar-energy-o8f7.onrender.com](https://solar-energy-o8f7.onrender.com)
 
 **Repository Structure**
 
