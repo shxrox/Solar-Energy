@@ -19,20 +19,22 @@ export const syncEnergyGenerationRecords = async () => {
 
         for (const solarUnit of solarUnits) {
 
-          
+
             const lastSyncedRecord = await EnergyGenerationRecord
                 .findOne({ solarUnitId: solarUnit._id })
                 .sort({ timestamp: -1 });
 
 
-            const baseUrl = `http://localhost:8001/api/energy-generation-records/solar-unit/${solarUnit.serialNumber}`;
-            const url = new URL(baseUrl);
+          
 
+            const dataApiBase = process.env.DATA_API_URL || "http://localhost:8001/api";
+            const baseUrl = `${dataApiBase}/energy-generation-records/solar-unit/${solarUnit.serialNumber}`;
+            const url = new URL(baseUrl);
             if (lastSyncedRecord?.timestamp) {
                 url.searchParams.append('sinceTimestamp', lastSyncedRecord.timestamp.toISOString());
             }
 
-          
+
             const dataAPIResponse = await fetch(url.toString());
             if (!dataAPIResponse.ok) {
                 throw new Error("Failed to fetch energy generation records from data API");
@@ -43,7 +45,7 @@ export const syncEnergyGenerationRecords = async () => {
                 .parse(await dataAPIResponse.json());
 
             if (newRecords.length > 0) {
-              
+
                 const recordsToInsert = newRecords.map(record => ({
                     solarUnitId: solarUnit._id,
                     energyGenerated: record.energyGenerated,
