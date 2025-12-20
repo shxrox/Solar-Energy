@@ -1,6 +1,6 @@
 # VoltVision
 
-![Logo](./VoltVision-Frontend/public/assets/icons/logo-edited.png)
+![Logo](./VoltVision-Frontend/public/assets/icons/logo/logo-edited.png)
 
 **VoltVision** is a comprehensive monorepo for solar energy management. It features a robust data-ingestion engine, a financial backend integrated with Stripe, and a modern React dashboard for real-time monitoring.
 
