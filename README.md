@@ -1,42 +1,87 @@
-# VoltVision
 
-# ![Logo](./VoltVision-Frontend/public/assets//icons/logo.svg) VoltVision
 
-Comprehensive monorepo for the VoltVision solar energy project. This repository contains three main services:
+![Logo](./VoltVision-Frontend/public/assets/icons/logo-ed.png)
 
-- `VoltVision-Backend` — primary backend REST API (in TypeScript/Node).
-- `VoltVision-data-API` — lightweight data-ingest API and cron job for energy records.
-- `VoltVision-Frontend` — Vite + React frontend application.
+**VoltVision** is a comprehensive monorepo for solar energy management. It features a robust data-ingestion engine, a financial backend integrated with Stripe, and a modern React dashboard for real-time monitoring.
 
-This README describes the project structure, environment variables, development setup, and useful scripts for each service.
+---
 
-**Live Demo**
+## 🚀 Live Deployments
 
-Frontend deployment: [https://volt-vision.netlify.app/](https://volt-vision.netlify.app/)
+| Service | Deployment Link |
+| :--- | :--- |
+| **Front-end** | https://volt-visions.netlify.app/ |
+| **Back-end API** | https://backend-6fd8.onrender.com |
+| **Data-API** | https://solar-energy-o8f7.onrender.com |
 
-**Repository Structure**
+---
 
-- `VoltVision-Backend/` — Server handling users, solar units, invoices, payments, analytics, background sync, and webhooks.
-- `VoltVision-data-API/` — Service responsible for collecting/cron-ing energy-generation records from devices or external providers.
-- `VoltVision-Frontend/` — React UI (admin + public pages) built with Vite.
+## 📂 Repository Structure
 
-**Quick Start (local dev)**
+- **`VoltVision-Backend/`**  
+  Primary REST API handling users, solar units, invoicing, analytics, and Stripe payment processing.
 
-Prerequisites:
+- **`VoltVision-data-API/`**  
+  Lightweight service for energy record ingestion and automated cron jobs.
 
-- Node.js 18+ (or the version set in each service `package.json`).
-- npm or yarn.
-- MongoDB (local or cloud instance via MongoDB Atlas).
-- Optional: `ngrok` for exposing local servers to the internet when testing webhooks.
+- **`VoltVision-Frontend/`**  
+  Modern UI built with **Vite + React** for administrators and consumers.
 
-General pattern to run each service locally:
+---
 
-1. Open a terminal in the service folder (e.g. `VoltVision-Backend`).
-2. Copy `.env.example` to `.env` (if present) and set environment variables.
-3. Install dependencies: `npm install`.
-4. Run in dev mode: `npm run dev` or `npm run start:dev` (see each `package.json`).
+## ⚙️ Environment Variables
 
-Example commands:
+Each service requires a `.env` file in its root directory.
+
+### Backend (`VoltVision-Backend/.env`)
+
+```env
+PORT=3000
+MONGODB_URL=your_mongodb_connection_url
+CLERK_SECRET_KEY=your_clerk_secret
+CLERK_WEBHOOK_SIGNING_SECRET=your_clerk_webhook_secret
+DATA_API_URL=https://solar-energy-o8f7.onrender.com
+STRIPE_SECRET_KEY=your_stripe_secret
+STRIPE_PRICE_ID=your_stripe_price_id
+STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
+FRONTEND_URL=https://volt-visions.netlify.app
+```
+
+### Frontend (`VoltVision-Frontend/.env`)
+
+```env
+VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+VITE_BACKEND_URL=https://backend-6fd8.onrender.com
+```
+
+### Data API (`VoltVision-data-API/.env`)
+
+```env
+PORT=3001
+MONGODB_URL=your_mongodb_connection_url
+```
+
+---
+
+## 🛠️ Quick Start (Local Development)
+
+### Prerequisites
+
+- **Node.js** v18+
+- **MongoDB** (local instance or MongoDB Atlas)
+- **npm** or **yarn**
+
+### Installation & Execution
+
+Clone the repository:
+
+```bash
+git clone <your-repo-link>
+cd VoltVision
+```
+
+#### Backend
 
 ```bash
 cd VoltVision-Backend
@@ -44,80 +89,89 @@ npm install
 npm run dev
 ```
 
-Repeat for `VoltVision-data-API` and `VoltVision-Frontend` (frontend typically uses `npm run dev` to start Vite).
-
-**Environment variables**
-
-Each service keeps its env variables in a `.env` file at the service root. Common variables:
-
-- `PORT` — server port
-- `MONGODB_URL` — MongoDB connection string (local or MongoDB Atlas)
-- `NODE_ENV` — `development` | `production`
-- `CLERK_SECRET_KEY` — Clerk authentication secret
-- `CLERK_PUBLISHABLE_KEY` — Clerk publishable key (frontend)
-- `STRIPE_SECRET_KEY` — Stripe secret key for payment processing
-- `STRIPE_PUBLISHABLE_KEY` — Stripe publishable key (frontend)
-- `NGROK_AUTH_TOKEN` — ngrok authentication token (optional, for webhook testing)
-
-Refer to the `.env` files in each service folder for specific variable names and values.
-
-**Database & Seeding**
-
-- Both backend services include `infrastructure/seed.ts` (or similar) to seed sample data. Run the seed script after connecting to MongoDB.
-
-Example:
+#### Data API
 
 ```bash
-cd VoltVision-Backend
+cd ../VoltVision-data-API
+npm install
+npm run dev
+```
+
+#### Frontend
+
+```bash
+cd ../VoltVision-Frontend
+npm install
+npm run dev
+```
+
+The frontend will be available at `http://localhost:5173` by default.
+
+---
+
+## 🔄 Core Features
+
+### 1. Database & Seeding
+
+Both backend services include seed scripts to populate the database with sample data.
+
+```bash
 npm run seed
 ```
 
-Check `package.json` scripts for the exact command name.
+Run the command from the respective service directory after configuring `MONGODB_URL`.
 
-**Background jobs & scheduler**
+---
 
-- `VoltVision-Backend` contains a `scheduler.ts` and `background/sync-energy-generation-records.ts` for periodic processing.
-- `VoltVision-data-API` contains `energy-generation-cron.ts` for timed ingestion tasks.
+### 2. Background Jobs
 
-Start these with the service (some are automatically started by the main server), or run them separately per `package.json` scripts.
+- **Energy Sync**:  
+  `VoltVision-Backend/background/sync-energy-generation-records.ts` handles periodic data reconciliation.
 
-**Frontend**
+- **Ingestion Cron**:  
+  `VoltVision-data-API/energy-generation-cron.ts` automatically ingests or simulates energy readings.
 
-- Start the frontend with `npm run dev` in `VoltVision-Frontend` and open the printed local URL (usually `http://localhost:5173`).
-- The frontend uses Vite + React; build for production with `npm run build` and preview with `npm run preview`.
+---
 
-**Webhooks & ngrok**
+### 3. Payments & Authentication
 
-- To test webhooks locally, use `ngrok` to create a public HTTPS endpoint that forwards to your local backend. The repo contains `ngrok.yml` for each service.
+- **Authentication**: Managed using **Clerk** for secure user sessions.
+- **Payments**: Integrated with **Stripe** for subscriptions and billing. Webhooks process payment and subscription events.
 
-Example:
+---
+
+## ⚓ Webhooks & Local Testing
+
+To test Stripe or Clerk webhooks locally, expose your backend using **ngrok**:
 
 ```bash
 ngrok http 3000 --config ./ngrok.yml
 ```
 
-Replace `3000` with your `PORT` value and adjust the ngrok config path as needed.
+Update webhook URLs in the Stripe and Clerk dashboards with the generated HTTPS endpoint.
 
-**Testing & Linting**
+---
 
-- Each service may include scripts for tests and linting in their `package.json`. Run `npm test` and `npm run lint` from service directories when available.
+## 🧪 Scripts
 
-**Scripts (check each service `package.json`)**
+Common scripts available in each service (`package.json`):
 
-- `npm run dev` — start in development, often with `nodemon` or `ts-node-dev`.
-- `npm run build` — compile TypeScript to JS for production.
-- `npm start` — run compiled production server.
-- `npm run seed` — run DB seed script.
+- `npm run dev` – Start development server with hot reload
+- `npm run build` – Build the project for production
+- `npm run start` – Run the production build
+- `npm run lint` – Run code style checks
 
-**Contributing**
+---
 
-- Fork the repo, create a feature branch, implement changes, and open a pull request with clear description of changes.
-- Follow the existing TypeScript style and patterns found in `src/` folders.
+## 🤝 Contributing
 
-**Troubleshooting**
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/AmazingFeature`
+3. Commit your changes: `git commit -m "Add AmazingFeature"`
+4. Push to the branch: `git push origin feature/AmazingFeature`
+5. Open a Pull Request
 
-- If the server fails to connect to the database, ensure `DATABASE_URL`/DB env vars are correct and the DB is accepting connections from your host.
-- If a port is in use, change `PORT` in the `.env` file.
+---
 
-
+Built with ❤️ for **sustainable energy management** and **grid optimization**.
 
