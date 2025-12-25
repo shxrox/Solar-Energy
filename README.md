@@ -1,6 +1,6 @@
 # VoltVision
 
-# ![Logo](./VoltVision-Frontend/public/assets//icons/logo.svg) VoltVision
+# ![Logo](./VoltVision-Frontend/public/assets/logo/logo-edited.png) VoltVision
 
 Comprehensive monorepo for the VoltVision solar energy project. This repository contains three main services:
 
