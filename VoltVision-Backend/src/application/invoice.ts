@@ -72,6 +72,31 @@ export const generateInvoiceManually = async (
 // --- ADMIN FUNCTIONS ---
 
 // 3. ADMIN: Get ALL Invoices
+// export const getAllInvoices = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const { status } = req.query;
+    
+//     const filter: any = {};
+//     if (status && status !== "ALL") {
+//       filter.paymentStatus = status;
+//     }
+
+//     // Find ALL invoices
+//     const invoices = await Invoice.find(filter)
+//       .sort({ createdAt: -1 })
+//       .populate('solarUnitId', 'serialNumber'); 
+    
+//     res.status(200).json(invoices);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+// --- ADMIN FUNCTIONS ---
+
 export const getAllInvoices = async (
   req: Request,
   res: Response,
@@ -85,17 +110,17 @@ export const getAllInvoices = async (
       filter.paymentStatus = status;
     }
 
-    // Find ALL invoices
+    // Find ALL invoices and "Join" the user data
     const invoices = await Invoice.find(filter)
       .sort({ createdAt: -1 })
-      .populate('solarUnitId', 'serialNumber'); 
+      .populate('solarUnitId', 'serialNumber')
+      .populate('userId', 'firstName lastName email'); // Fetches user names
     
     res.status(200).json(invoices);
   } catch (error) {
     next(error);
   }
 };
-
 // 4. ADMIN: Update Status
 export const updateInvoiceStatus = async (
   req: Request,
