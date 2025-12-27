@@ -1,10 +1,14 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateSolarUnitMutation } from "@/lib/redux/query";
 import { useNavigate } from "react-router";
 import { Loader2, AlertCircle, Save, CheckCircle, ArrowLeft } from "lucide-react";
+// ✅ Import React Toastify
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const formSchema = z.object({
   serialNumber: z.string().min(1, { message: "Serial number is required" }),
@@ -15,9 +19,8 @@ const formSchema = z.object({
 
 export function CreateSolarUnitForm() {
   const navigate = useNavigate();
-  const [createSolarUnit, { isLoading }] = useCreateSolarUnitMutation();
-  const [showSuccess, setShowSuccess] = useState(false);
-
+  const [createSolarUnit, { isLoading, isSuccess: isMutationSuccess }] = useCreateSolarUnitMutation();
+  
   const {
     register,
     handleSubmit,
@@ -33,45 +36,52 @@ export function CreateSolarUnitForm() {
     },
   });
 
+  // ✅ Handle Success with Toast & Navigation
+  useEffect(() => {
+    if (isMutationSuccess) {
+      toast.success("Solar Unit Registered Successfully!", {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        theme: "colored",
+        onClose: () => navigate("/admin/solar-units")
+      });
+      reset();
+    }
+  }, [isMutationSuccess, navigate, reset]);
+
   async function onSubmit(values) {
     try {
       await createSolarUnit(values).unwrap();
-      setShowSuccess(true);
-      reset();
-      setTimeout(() => {
-        navigate("/admin/solar-units"); 
-      }, 1500);
+      // Toast handled by useEffect on isSuccess
     } catch (error) {
       console.error("Failed to create unit:", error);
+      toast.error(error?.data?.message || "Failed to create unit. Check your inputs.", {
+        position: "top-right",
+        theme: "colored"
+      });
     }
   }
 
   return (
     <div className="max-w-2xl mx-auto space-y-8">
+      {/* ✅ Add Toast Container */}
+      <ToastContainer />
+
       {/* Back Link */}
       <button 
         onClick={() => navigate(-1)} 
-        className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-colors"
+        className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-base-content/40 hover:text-base-content transition-colors"
       >
         <ArrowLeft className="w-4 h-4" /> Cancel & Return
       </button>
 
-      {/* --- Success Notification --- */}
-      {showSuccess && (
-        <div className="p-4 border-l-4 border-green-500 text-green-700 flex items-center gap-3 animate-in fade-in slide-in-from-left-2">
-          <CheckCircle className="w-5 h-5" />
-          <div className="text-sm">
-            <p className="font-black uppercase tracking-wider">Unit Registered</p>
-            <p className="opacity-80 font-medium">Redirecting to fleet management...</p>
-          </div>
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
+      {/* Form Container */}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-10 bg-base-100 p-8 rounded-2xl border border-base-200 shadow-sm">
         
         {/* --- Serial Number --- */}
         <div className="space-y-1">
-          <label htmlFor="serialNumber" className="text-[10px] font-black uppercase tracking-widest text-gray-400 block">
+          <label htmlFor="serialNumber" className="text-[10px] font-black uppercase tracking-widest text-base-content/40 block">
             Serial Number
           </label>
           <input
@@ -79,12 +89,12 @@ export function CreateSolarUnitForm() {
             type="text"
             placeholder="e.g. SU-2024-001"
             {...register("serialNumber")}
-            className={`w-full py-2 bg-transparent border-0 border-b outline-none transition-all font-bold text-lg placeholder:text-gray-200 ${
-              errors.serialNumber ? "border-red-500 text-red-600" : "border-gray-200 focus:border-blue-600"
+            className={`w-full py-2 bg-transparent border-0 border-b outline-none transition-all font-bold text-lg placeholder:text-base-content/20 text-base-content ${
+              errors.serialNumber ? "border-error text-error" : "border-base-300 focus:border-primary"
             }`}
           />
           {errors.serialNumber && (
-            <p className="text-[10px] font-bold text-red-500 uppercase mt-1 flex items-center gap-1">
+            <p className="text-[10px] font-bold text-error uppercase mt-1 flex items-center gap-1">
               <AlertCircle className="w-3 h-3" /> {errors.serialNumber.message}
             </p>
           )}
@@ -93,22 +103,22 @@ export function CreateSolarUnitForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* --- Installation Date --- */}
           <div className="space-y-1">
-            <label htmlFor="installationDate" className="text-[10px] font-black uppercase tracking-widest text-gray-400 block">
+            <label htmlFor="installationDate" className="text-[10px] font-black uppercase tracking-widest text-base-content/40 block">
               Installation Date
             </label>
             <input
               id="installationDate"
               type="date"
               {...register("installationDate")}
-              className={`w-full py-2 bg-transparent border-0 border-b outline-none transition-all font-bold ${
-                errors.installationDate ? "border-red-500" : "border-gray-200 focus:border-blue-600"
+              className={`w-full py-2 bg-transparent border-0 border-b outline-none transition-all font-bold text-base-content ${
+                errors.installationDate ? "border-error" : "border-base-300 focus:border-primary"
               }`}
             />
           </div>
 
           {/* --- Capacity --- */}
           <div className="space-y-1">
-            <label htmlFor="capacity" className="text-[10px] font-black uppercase tracking-widest text-gray-400 block">
+            <label htmlFor="capacity" className="text-[10px] font-black uppercase tracking-widest text-base-content/40 block">
               Capacity (Watts)
             </label>
             <input
@@ -116,8 +126,8 @@ export function CreateSolarUnitForm() {
               type="number"
               placeholder="5000"
               {...register("capacity")}
-              className={`w-full py-2 bg-transparent border-0 border-b outline-none transition-all font-bold text-lg ${
-                errors.capacity ? "border-red-500" : "border-gray-200 focus:border-blue-600"
+              className={`w-full py-2 bg-transparent border-0 border-b outline-none transition-all font-bold text-lg text-base-content ${
+                errors.capacity ? "border-error" : "border-base-300 focus:border-primary"
               }`}
             />
           </div>
@@ -125,20 +135,21 @@ export function CreateSolarUnitForm() {
 
         {/* --- Status --- */}
         <div className="space-y-1">
-          <label htmlFor="status" className="text-[10px] font-black uppercase tracking-widest text-gray-400 block">
+          <label htmlFor="status" className="text-[10px] font-black uppercase tracking-widest text-base-content/40 block">
             Initial Operational Status
           </label>
           <div className="relative">
             <select
               id="status"
               {...register("status")}
-              className="w-full py-2 bg-transparent border-0 border-b outline-none appearance-none font-bold text-gray-700 cursor-pointer border-gray-200 focus:border-blue-600"
+              className="w-full py-2 bg-transparent border-0 border-b outline-none appearance-none font-bold text-base-content cursor-pointer border-base-300 focus:border-primary"
             >
-              <option value="ACTIVE">Active</option>
-              <option value="INACTIVE">Inactive</option>
-              <option value="MAINTENANCE">Maintenance</option>
+              <option value="ACTIVE" className="text-success font-bold">Active (Standard)</option>
+              <option value="INACTIVE" className="text-base-content/40">Inactive (Offline)</option>
+              <option value="MAINTENANCE" className="text-warning font-bold">Maintenance (Service Mode)</option>
             </select>
-            <div className="absolute inset-y-0 right-0 flex items-center pointer-events-none opacity-40">
+            {/* Custom Arrow */}
+            <div className="absolute inset-y-0 right-0 flex items-center pointer-events-none opacity-40 text-base-content">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
             </div>
           </div>
@@ -148,15 +159,15 @@ export function CreateSolarUnitForm() {
         <div className="pt-6">
           <button
             type="submit"
-            disabled={isLoading || showSuccess}
-            className="flex items-center justify-center gap-3 px-8 py-4 bg-blue-600 text-white font-black uppercase tracking-widest text-xs hover:bg-blue-700 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+            disabled={isLoading || isMutationSuccess}
+            className="w-full md:w-auto btn btn-primary rounded-lg font-bold uppercase tracking-widest text-xs"
           >
             {isLoading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
                 Synchronizing...
               </>
-            ) : showSuccess ? (
+            ) : isMutationSuccess ? (
               <>
                 <CheckCircle className="w-4 h-4" />
                 Registry Complete

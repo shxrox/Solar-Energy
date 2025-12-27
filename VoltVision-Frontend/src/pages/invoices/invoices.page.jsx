@@ -1,132 +1,143 @@
+
 import { useGetMyInvoicesQuery } from "@/lib/redux/query";
 import { format } from "date-fns";
 import { useNavigate } from "react-router";
-import { FileText, Zap, CreditCard, CheckCircle } from "lucide-react";
+import { FileText, Zap, CreditCard, CheckCircle, Loader2 } from "lucide-react";
 
 export default function InvoicesPage() {
   const navigate = useNavigate();
   const { data: invoices, isLoading, isError } = useGetMyInvoicesQuery();
 
   if (isLoading) {
-    return <div className="p-8 text-center opacity-60">Loading invoices...</div>;
+    return (
+      <div className="flex h-[50vh] flex-col items-center justify-center space-y-4">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        <p className="animate-pulse text-sm font-medium text-base-content/60">Loading billing history...</p>
+      </div>
+    );
   }
 
   if (isError) {
-    return <div className="p-8 text-center text-red-500">Failed to load invoices.</div>;
+    return (
+      <div className="p-8 flex justify-center">
+        <div className="alert alert-error shadow-sm max-w-lg">
+          <span className="font-medium">Failed to load invoices. Please check your connection.</span>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto space-y-6">
+    <div className="p-6 max-w-5xl mx-auto space-y-8 pb-20">
+      
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Billing Statements</h1>
-        <p className="opacity-70 mt-1">Your monthly energy billing history</p>
+      <div className="flex flex-col gap-2 border-b border-base-200 pb-6">
+        <h1 className="text-3xl font-bold tracking-tight text-base-content flex items-center gap-3">
+          <FileText className="w-8 h-8 text-primary" />
+          Billing Statements
+        </h1>
+        <p className="text-base-content/60 text-lg">Your monthly energy usage and payment history.</p>
       </div>
 
       {/* Empty State */}
       {(!invoices || invoices.length === 0) ? (
-        <div className="border border-dashed p-16 rounded-xl text-center">
-          <FileText className="w-12 h-12 mx-auto mb-4 opacity-40" />
-          <h3 className="text-lg font-semibold">No Bills Generated</h3>
-          <p className="opacity-60">Your bills will appear here after usage.</p>
+        <div className="flex flex-col items-center justify-center p-16 border-2 border-dashed border-base-200 rounded-2xl text-center bg-base-100">
+          <div className="p-4 bg-base-200 rounded-full mb-4">
+            <FileText className="w-8 h-8 text-base-content/40" />
+          </div>
+          <h3 className="text-xl font-bold text-base-content">No Bills Generated</h3>
+          <p className="text-base-content/60 mt-1">Your monthly bills will appear here once generated.</p>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="grid gap-6">
           {invoices.map((invoice) => {
             const amount = (invoice.totalEnergyGenerated * 0.05).toFixed(2);
 
             return (
               <div
                 key={invoice._id}
-                className="border rounded-xl p-6 shadow-sm flex flex-col gap-6"
+                className="group relative flex flex-col bg-base-100 border border-base-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
               >
+                {/* Status Color Stripe */}
+                <div className={`h-1.5 w-full ${
+                    invoice.paymentStatus === 'PAID' ? 'bg-success' : 'bg-primary'
+                }`}></div>
 
-                {/* Top Bill Header */}
-                <div className="flex flex-col md:flex-row justify-between gap-4">
-                  <div>
-                    <h3 className="text-xl font-bold tracking-wide">
-                      Billing Statement
-                    </h3>
-                    <p className="text-sm opacity-60">
-                      Invoice ID: #{invoice._id.slice(-6).toUpperCase()}
-                    </p>
-                  </div>
+                <div className="p-6 flex flex-col md:flex-row gap-6 justify-between">
+                    
+                    {/* Left: Info */}
+                    <div className="flex-1 space-y-4">
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <h3 className="text-xl font-bold text-base-content tracking-tight">Statement #{invoice._id.slice(-6).toUpperCase()}</h3>
+                                <p className="text-sm text-base-content/50 font-mono mt-1">
+                                    Issued: {format(new Date(invoice.createdAt), "MMMM d, yyyy")}
+                                </p>
+                            </div>
+                            
+                            {/* Mobile Status Badge */}
+                            <div className={`badge md:hidden font-bold ${
+                                invoice.paymentStatus === 'PAID' ? 'badge-success badge-outline' : 'badge-primary badge-outline'
+                            }`}>
+                                {invoice.paymentStatus}
+                            </div>
+                        </div>
 
-                  {/* Status */}
-                  <div className="flex items-center gap-2">
-                    {invoice.paymentStatus === "PAID" ? (
-                      <div className="flex items-center gap-2 text-green-600 font-medium">
-                        <CheckCircle className="w-5 h-5" />
-                        Paid
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2 text-blue-600 font-medium">
-                        <FileText className="w-5 h-5" />
-                        Pending Payment
-                      </div>
-                    )}
-                  </div>
-                </div>
+                        {/* Details Grid */}
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-8 py-2">
+                            <div>
+                                <p className="text-xs font-bold uppercase tracking-wider text-base-content/40 mb-1">Billing Period</p>
+                                <p className="text-sm font-medium text-base-content">
+                                    {format(new Date(invoice.billingPeriodStart), "MMM d")} - {format(new Date(invoice.billingPeriodEnd), "MMM d, yyyy")}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-xs font-bold uppercase tracking-wider text-base-content/40 mb-1">Energy Used</p>
+                                <div className="flex items-center gap-1 text-sm font-medium text-base-content">
+                                    <Zap className="w-3 h-3 text-warning fill-current" />
+                                    {invoice.totalEnergyGenerated.toFixed(1)} kWh
+                                </div>
+                            </div>
+                            <div>
+                                <p className="text-xs font-bold uppercase tracking-wider text-base-content/40 mb-1">Rate</p>
+                                <p className="text-sm font-medium text-base-content">$0.05 / kWh</p>
+                            </div>
+                        </div>
+                    </div>
 
-                {/* Billing Period */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-                  <div>
-                    <p className="opacity-60">From</p>
-                    <p className="font-medium">
-                      {format(new Date(invoice.billingPeriodStart), "MMM d, yyyy")}
-                    </p>
-                  </div>
+                    {/* Right: Action & Total */}
+                    <div className="flex flex-col justify-between items-end gap-6 border-t md:border-t-0 md:border-l border-base-200 pt-4 md:pt-0 md:pl-8 min-w-[200px]">
+                        
+                        {/* Desktop Status Badge */}
+                        <div className={`hidden md:flex badge font-bold ${
+                            invoice.paymentStatus === 'PAID' ? 'badge-success badge-outline' : 'badge-primary badge-outline'
+                        }`}>
+                            {invoice.paymentStatus}
+                        </div>
 
-                  <div>
-                    <p className="opacity-60">To</p>
-                    <p className="font-medium">
-                      {format(new Date(invoice.billingPeriodEnd), "MMM d, yyyy")}
-                    </p>
-                  </div>
+                        <div className="text-right">
+                            <p className="text-xs text-base-content/50 uppercase tracking-wide">Total Amount</p>
+                            <p className="text-3xl font-black text-base-content">${amount}</p>
+                        </div>
 
-                  <div>
-                    <p className="opacity-60 flex items-center gap-1">
-                      <Zap className="w-4 h-4" /> Energy Used
-                    </p>
-                    <p className="font-medium">
-                      {invoice.totalEnergyGenerated.toFixed(1)} kWh
-                    </p>
-                  </div>
+                        <div className="w-full">
+                            {invoice.paymentStatus === "PENDING" ? (
+                                <button
+                                    onClick={() => navigate(`/dashboard/payment/${invoice._id}`)}
+                                    className="btn btn-primary btn-sm w-full gap-2 shadow-lg shadow-primary/20"
+                                >
+                                    <CreditCard className="w-4 h-4" />
+                                    Pay Now
+                                </button>
+                            ) : (
+                                <div className="flex items-center justify-end gap-2 text-success text-sm font-bold bg-success/10 px-3 py-1.5 rounded-lg w-full">
+                                    <CheckCircle className="w-4 h-4" />
+                                    Paid on {invoice.paidAt ? format(new Date(invoice.paidAt), "MMM d") : "—"}
+                                </div>
+                            )}
+                        </div>
+                    </div>
 
-                  <div>
-                    <p className="opacity-60">Rate</p>
-                    <p className="font-medium">$0.05 / kWh</p>
-                  </div>
-                </div>
-
-                {/* Divider */}
-                <div className="border-t pt-4 flex flex-col md:flex-row justify-between items-center gap-4">
-                  
-                  {/* Amount */}
-                  <div>
-                    <p className="text-sm opacity-60">Total Amount</p>
-                    <p className="text-2xl font-bold">${amount}</p>
-                  </div>
-
-                  {/* Action */}
-                  <div>
-                    {invoice.paymentStatus === "PENDING" ? (
-                      <button
-                        onClick={() => navigate(`/dashboard/payment/${invoice._id}`)}
-                        className="flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium"
-                      >
-                        <CreditCard className="w-4 h-4" />
-                        Pay Now
-                      </button>
-                    ) : (
-                      <div className="px-4 py-2 rounded-full border text-green-600 border-green-200 text-sm font-medium">
-                        Paid on{" "}
-                        {invoice.paidAt
-                          ? format(new Date(invoice.paidAt), "MMM d, yyyy")
-                          : "—"}
-                      </div>
-                    )}
-                  </div>
                 </div>
               </div>
             );

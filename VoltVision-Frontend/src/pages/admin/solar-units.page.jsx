@@ -1,3 +1,5 @@
+
+
 import { SolarUnitsTab } from "./components/SolarUnitsTab";
 import { useGetSolarUnitsQuery } from "@/lib/redux/query";
 import { Sun, Zap, CheckCircle, AlertTriangle, Server } from "lucide-react";
@@ -18,26 +20,27 @@ export default function SolarUnitsPage() {
       
       {/* --- HEADER --- */}
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight flex items-center gap-3">
-          <Sun className="h-8 w-8 text-yellow-500 fill-yellow-500" />
+        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight flex items-center gap-3 text-base-content">
+          {/* Use 'text-warning' for Sun to keep it yellow/warm in all themes */}
+          <Sun className="h-8 w-8 text-warning fill-warning" />
           Solar Fleet Management
         </h1>
-        <p className="text-lg opacity-60 max-w-2xl">
+        <p className="text-lg text-base-content/60 max-w-2xl">
           Monitor operational status, track total capacity, and manage infrastructure across all connected systems.
         </p>
       </div>
 
-      {/* --- KPI STATS GRID (Transparent & Minimalist with Loading States) --- */}
+      {/* --- KPI STATS GRID --- */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
         
-        {/* Card 1: Total Units */}
+        {/* Card 1: Total Units (Blue -> Info) */}
         <div className="flex flex-col gap-4">
-          <div className="text-blue-600">
+          <div className="text-info">
             <Server className="h-6 w-6" />
           </div>
           <div className="space-y-1">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Total Units</p>
-            <p className="text-4xl font-black">
+            <p className="text-xs font-bold text-base-content/40 uppercase tracking-widest">Total Units</p>
+            <p className="text-4xl font-black text-base-content">
               {isLoading ? (
                 <span className="opacity-20 animate-pulse">--</span>
               ) : (
@@ -47,34 +50,34 @@ export default function SolarUnitsPage() {
           </div>
         </div>
 
-        {/* Card 2: Total Capacity */}
+        {/* Card 2: Total Capacity (Purple -> Primary) */}
         <div className="flex flex-col gap-4">
-          <div className="text-purple-600">
+          <div className="text-primary">
             <Zap className="h-6 w-6 fill-current" />
           </div>
           <div className="space-y-1">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Grid Capacity</p>
-            <p className="text-4xl font-black">
+            <p className="text-xs font-bold text-base-content/40 uppercase tracking-widest">Grid Capacity</p>
+            <p className="text-4xl font-black text-base-content">
               {isLoading ? (
                 <span className="opacity-20 animate-pulse">--.-</span>
               ) : (
                 <>
                   {(totalCapacity / 1000).toFixed(1)} 
-                  <span className="text-xl font-medium opacity-50 ml-1">kW</span>
+                  <span className="text-xl font-medium opacity-50 ml-1 text-base-content/60">kW</span>
                 </>
               )}
             </p>
           </div>
         </div>
 
-        {/* Card 3: Online Status */}
+        {/* Card 3: Online Status (Emerald -> Success) */}
         <div className="flex flex-col gap-4">
-          <div className="text-emerald-600">
+          <div className="text-success">
             <CheckCircle className="h-6 w-6" />
           </div>
           <div className="space-y-1">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Online Systems</p>
-            <p className="text-4xl font-black text-emerald-600">
+            <p className="text-xs font-bold text-base-content/40 uppercase tracking-widest">Online Systems</p>
+            <p className="text-4xl font-black text-success">
               {isLoading ? (
                 <span className="opacity-20 animate-pulse">--</span>
               ) : (
@@ -84,14 +87,14 @@ export default function SolarUnitsPage() {
           </div>
         </div>
 
-        {/* Card 4: Maintenance */}
+        {/* Card 4: Maintenance (Orange -> Warning) */}
         <div className="flex flex-col gap-4">
-          <div className="text-orange-600">
+          <div className="text-warning">
             <AlertTriangle className="h-6 w-6" />
           </div>
           <div className="space-y-1">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Maintenance</p>
-            <p className="text-4xl font-black text-orange-600">
+            <p className="text-xs font-bold text-base-content/40 uppercase tracking-widest">Maintenance</p>
+            <p className="text-4xl font-black text-warning">
               {isLoading ? (
                 <span className="opacity-20 animate-pulse">--</span>
               ) : (
@@ -104,7 +107,7 @@ export default function SolarUnitsPage() {
       </div>
 
       {/* --- CONTENT SECTION --- */}
-      <div className="mt-12 pt-8 border-t border-gray-100">
+      <div className="mt-12 pt-8 border-t border-base-200">
         <SolarUnitsTab />
       </div>
       

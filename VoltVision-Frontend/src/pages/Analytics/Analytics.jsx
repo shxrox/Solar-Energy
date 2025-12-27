@@ -1,455 +1,304 @@
 
-// import React from "react";
-// import { useGetSolarUnitForUserQuery, useGetAnomalyStatsQuery } from "@/lib/redux/query";
-// import { useUser } from "@clerk/clerk-react";
-// import { AlertTriangle, CheckCircle, Clock, ThermometerSun, AlertCircle, TrendingUp } from "lucide-react";
-// import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
-// // Import Task 3 Components
-// import WeatherWidget from "../wather/WeatherWidget";
-// import CapacityFactorChart from "../dashboard/components/CapacityFactorChart";
-
-// // Helper Button Component
-// const ActionButton = ({ children, className, ...props }) => (
-//   <button
-//     className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${className}`}
-//     {...props}
-//   >
-//     {children}
-//   </button>
-// );
-
-// const AnalyticsPage = () => {
-//   const { user } = useUser();
-
-//   const { data: solarUnit, isLoading } = useGetSolarUnitForUserQuery();
-//   const { data: anomalyData } = useGetAnomalyStatsQuery(solarUnit?._id, {
-//     skip: !solarUnit
-//   });
-
-//   if (isLoading) {
-//     return (
-//       <div className="flex h-[50vh] items-center justify-center">
-//         <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mr-2"></div>
-//         <p>Loading analytics...</p>
-//       </div>
-//     );
-//   }
-
-//   if (!solarUnit) {
-//     return (
-//       <div className="p-8">
-//         <div className="border border-dashed p-12 rounded-lg text-center">
-//           <AlertCircle className="w-10 h-10 mx-auto mb-3" />
-//           <h2 className="text-xl font-semibold">No System Linked</h2>
-//           <p className="max-w-sm mx-auto mt-2">
-//             Please ask an administrator to assign a solar unit to your account to view analytics.
-//           </p>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="p-8 space-y-8 max-w-7xl mx-auto pb-20">
-
-//       {/* HEADER */}
-//       <div>
-//         <h1 className="text-3xl font-bold tracking-tight">System Analytics</h1>
-//         <p className="mt-1">
-//           Performance metrics and anomaly detection for
-//           <span className="font-mono px-2 py-0.5 rounded ml-1">
-//             {solarUnit.serialNumber}
-//           </span>
-//         </p>
-//       </div>
-
-//       {/* PERFORMANCE SECTION */}
-//       <section className="space-y-4">
-//         <h2 className="text-lg font-semibold flex items-center gap-2">
-//           <ThermometerSun className="w-5 h-5" /> Performance Overview
-//         </h2>
-
-//         <div className="grid gap-6 lg:grid-cols-2">
-//           <WeatherWidget solarUnit={solarUnit} />
-//           <CapacityFactorChart solarUnitId={solarUnit._id} />
-//         </div>
-//       </section>
-
-//       {/* ANOMALY SECTION */}
-//       <section className="space-y-4 pt-6 border-t">
-//         <div className="flex items-center justify-between">
-//           <h2 className="text-lg font-semibold flex items-center gap-2">
-//             <AlertTriangle className="w-5 h-5" /> Anomaly Detection
-//           </h2>
-//           <span className="text-xs font-medium px-2 py-1 rounded">
-//             Last 30 Days Analysis
-//           </span>
-//         </div>
-
-//         {/* KPI CARDS */}
-//         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-//           <div className="border-l-4 shadow-sm">
-//             <div className="p-6 flex items-center justify-between">
-//               <div>
-//                 <p className="text-sm font-medium">Active Anomalies</p>
-//                 <h3 className="text-3xl font-bold">
-//                   {anomalyData?.summary?.active || 0}
-//                 </h3>
-//               </div>
-//               <div className="p-3 rounded-full">
-//                 <AlertTriangle className="w-6 h-6" />
-//               </div>
-//             </div>
-//           </div>
-
-//           <div className="border-l-4 shadow-sm">
-//             <div className="p-6 flex items-center justify-between">
-//               <div>
-//                 <p className="text-sm font-medium">Under Review</p>
-//                 <h3 className="text-3xl font-bold">
-//                   {anomalyData?.summary?.review || 0}
-//                 </h3>
-//               </div>
-//               <div className="p-3 rounded-full">
-//                 <Clock className="w-6 h-6" />
-//               </div>
-//             </div>
-//           </div>
-
-//           <div className="border-l-4 shadow-sm">
-//             <div className="p-6 flex items-center justify-between">
-//               <div>
-//                 <p className="text-sm font-medium">Resolved</p>
-//                 <h3 className="text-3xl font-bold">
-//                   {anomalyData?.summary?.resolved || 0}
-//                 </h3>
-//               </div>
-//               <div className="p-3 rounded-full">
-//                 <CheckCircle className="w-6 h-6" />
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* CHARTS */}
-//         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-//           {/* PIE */}
-//           <div className="border rounded-lg">
-//             <div className="p-4">
-//               <h3 className="text-base font-semibold">Distribution by Type</h3>
-//             </div>
-//             <div className="h-[300px] p-4">
-//               {anomalyData?.distribution?.length > 0 ? (
-//                 <ResponsiveContainer width="100%" height="100%">
-//                   <PieChart>
-//                     <Pie
-//                       data={anomalyData?.distribution}
-//                       cx="50%"
-//                       cy="50%"
-//                       innerRadius={60}
-//                       outerRadius={80}
-//                       paddingAngle={5}
-//                       dataKey="value"
-//                     >
-//                       {anomalyData?.distribution?.map((entry, index) => (
-//                         <Cell key={`cell-${index}`} fill={entry.fill} />
-//                       ))}
-//                     </Pie>
-//                     <Tooltip
-//                       contentStyle={{ background: "transparent", border: "none", boxShadow: "none" }}
-//                       wrapperStyle={{ background: "transparent" }}
-//                     />
-//                     <Legend verticalAlign="bottom" height={36} />
-//                   </PieChart>
-//                 </ResponsiveContainer>
-//               ) : (
-//                 <div className="h-full flex items-center justify-center text-sm">
-//                   No anomalies detected
-//                 </div>
-//               )}
-//             </div>
-//           </div>
-
-//           {/* BAR */}
-//           <div className="border rounded-lg">
-//             <div className="p-4">
-//               <h3 className="text-base font-semibold">Trend Analysis (Daily)</h3>
-//             </div>
-//             <div className="h-[300px] p-4">
-//               {anomalyData?.trends?.length > 0 ? (
-//                 <ResponsiveContainer width="100%" height="100%">
-//                   <BarChart data={anomalyData?.trends} style={{ background: "transparent" }}>
-//                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
-//                     <XAxis dataKey="date" tickFormatter={(v) => new Date(v).getDate()} fontSize={12} />
-//                     <YAxis allowDecimals={false} fontSize={12} />
-//                     <Tooltip
-//                       contentStyle={{ background: "transparent", border: "none", boxShadow: "none" }}
-//                       wrapperStyle={{ background: "transparent" }}
-//                       labelFormatter={(l) => new Date(l).toLocaleDateString()}
-//                     />
-//                     <Bar dataKey="count" radius={[4, 4, 0, 0]} barSize={40} />
-//                   </BarChart>
-//                 </ResponsiveContainer>
-//               ) : (
-//                 <div className="h-full flex items-center justify-center text-sm">
-//                   No trends available
-//                 </div>
-//               )}
-//             </div>
-//           </div>
-
-//         </div>
-
-//         {/* RECENT LIST */}
-//         <div className="border rounded-lg">
-//           <div className="flex flex-row items-center justify-between p-4">
-//             <h3 className="text-base font-semibold">Recent Activity</h3>
-//             <TrendingUp className="w-4 h-4" />
-//           </div>
-
-//           <div className="p-4 space-y-4">
-//             {anomalyData?.recent?.map((item, i) => (
-//               <div
-//                 key={i}
-//                 className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border rounded-lg gap-4"
-//               >
-//                 <div className="flex items-center gap-4">
-//                   <div className="p-2 rounded-full flex-shrink-0">
-//                     <AlertTriangle className="w-5 h-5" />
-//                   </div>
-//                   <div>
-//                     <p className="font-medium">{item.type}</p>
-//                     <p className="text-xs">
-//                       Detected: {new Date(item.time).toLocaleString()}
-//                     </p>
-//                   </div>
-//                 </div>
-
-//                 <div className="flex items-center gap-3">
-//                   <span className="px-2.5 py-0.5 rounded-full text-xs font-medium border">
-//                     {item.severity}
-//                   </span>
-//                   <ActionButton>
-//                     Investigate
-//                   </ActionButton>
-//                 </div>
-//               </div>
-//             ))}
-
-//             {(!anomalyData?.recent || anomalyData.recent.length === 0) && (
-//               <div className="flex flex-col items-center justify-center py-8">
-//                 <CheckCircle className="w-8 h-8 mb-2 opacity-50" />
-//                 <p>System is healthy. No recent anomalies detected.</p>
-//               </div>
-//             )}
-//           </div>
-//         </div>
-
-//       </section>
-//     </div>
-//   );
-// };
-
-// export default AnalyticsPage;
-import React from "react";
+ import React, { useEffect } from "react";
 import { 
   useGetSolarUnitForUserQuery, 
   useGetAnomalyStatsQuery, 
   useResolveAnomalyMutation 
 } from "@/lib/redux/query";
 import { useUser } from "@clerk/clerk-react";
-import { AlertTriangle, CheckCircle, Clock, ThermometerSun, AlertCircle, TrendingUp, Check } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+import { 
+  AlertTriangle, 
+  CheckCircle, 
+  Clock, 
+  ThermometerSun, 
+  AlertCircle, 
+  TrendingUp, 
+  Check, 
+  Loader2 
+} from "lucide-react";
+import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend 
+} from 'recharts';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Import Task 3 Components
 import WeatherWidget from "../weather/WeatherWidget";
-import CapacityFactorChart from "../dashboard/components/CapacityFactorChart";
+import CapacityFactorChart from "../weather/CapacityFactorChart";
 
 const AnalyticsPage = () => {
   const { user } = useUser();
   const { data: solarUnit, isLoading } = useGetSolarUnitForUserQuery();
   
-  // ✅ 1. Connect to your real Anomaly Stats endpoint
   const { data: anomalyData, refetch } = useGetAnomalyStatsQuery(solarUnit?._id, {
     skip: !solarUnit
   });
 
-  // ✅ 2. Hook for the Resolution Action
-  const [resolveAnomaly, { isLoading: isResolving }] = useResolveAnomalyMutation();
+  const [resolveAnomaly, { isLoading: isResolving, isSuccess, isError }] = useResolveAnomalyMutation();
 
   const handleResolve = async (id) => {
     try {
       await resolveAnomaly(id).unwrap();
-      // Refetch stats to update the charts immediately
       refetch(); 
     } catch (err) {
-      console.error("Failed to resolve anomaly:", err);
+      console.error("Failed to resolve:", err);
     }
   };
 
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Issue resolved! Updating system metrics...", {
+        position: "top-right",
+        theme: "colored",
+        autoClose: 3000
+      });
+    }
+    if (isError) {
+      toast.error("Failed to update status. Please try again.", {
+        position: "top-right",
+        theme: "colored"
+      });
+    }
+  }, [isSuccess, isError]);
+
   if (isLoading) {
     return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mr-2"></div>
-        <p>Loading analytics...</p>
+      <div className="flex h-[60vh] flex-col items-center justify-center space-y-4">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        <p className="animate-pulse text-sm font-medium text-base-content/60">Loading analytics engine...</p>
       </div>
     );
   }
 
   if (!solarUnit) {
     return (
-      <div className="p-8 text-center border border-dashed rounded-lg">
-        <AlertCircle className="w-10 h-10 mx-auto mb-3 opacity-50" />
-        <h2 className="text-xl font-semibold">No System Linked</h2>
-        <p className="mt-2 text-gray-500">Please contact an administrator to assign a solar unit.</p>
+      <div className="p-10 flex flex-col items-center justify-center text-center border-2 border-dashed border-base-300 rounded-3xl m-8">
+        <AlertCircle className="w-12 h-12 mb-4 text-base-content/20" />
+        <h2 className="text-xl font-bold text-base-content">No System Linked</h2>
+        <p className="mt-2 text-base-content/60">Please contact an administrator to assign a solar unit.</p>
       </div>
     );
   }
 
   return (
-    <div className="p-8 space-y-8 max-w-7xl mx-auto pb-20">
-      {/* HEADER */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">System Analytics</h1>
-        <p className="text-gray-500 mt-1">
-          Performance and health monitoring for <span className="font-mono font-bold text-blue-600">{solarUnit.serialNumber}</span>
-        </p>
-      </div>
+    <div className="p-6 space-y-8 max-w-7xl mx-auto pb-20">
+      <ToastContainer />
+
+      {/* HEADER: Updated to Solid Background */}
+      <header className="flex flex-col md:flex-row justify-between items-center gap-4 bg-base-100 p-6 rounded-2xl border border-base-200 shadow-sm sticky top-0 z-10">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-base-content">
+            System Analytics
+          </h1>
+          <p className="text-sm text-base-content/60 mt-1">
+            Performance monitoring for <span className="font-mono font-bold ">{solarUnit.serialNumber}</span>
+          </p>
+        </div>
+        <div className="badge badge-primary badge-outline gap-2 p-3">
+            <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+            Live Data
+        </div>
+      </header>
 
       {/* PERFORMANCE SECTION */}
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
-          <ThermometerSun className="w-5 h-5 text-orange-500" /> Performance Overview
+        <h2 className="text-lg font-bold flex items-center gap-2 text-base-content">
+          <ThermometerSun className="w-5 h-5 text-warning" /> Performance Overview
         </h2>
         <div className="grid gap-6 lg:grid-cols-2">
-          <WeatherWidget solarUnit={solarUnit} />
-          <CapacityFactorChart solarUnitId={solarUnit._id} />
+          <div className="h-full">
+             <WeatherWidget solarUnit={solarUnit} />
+          </div>
+          <div className="h-full">
+             <CapacityFactorChart solarUnitId={solarUnit._id} />
+          </div>
         </div>
       </section>
 
       {/* ANOMALY SECTION */}
-      <section className="space-y-4 pt-6 border-t">
+      <section className="space-y-6 pt-8 border-t border-base-200">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-red-500" /> Anomaly Detection
+          <h2 className="text-lg font-bold flex items-center gap-2 text-base-content">
+            <AlertTriangle className="w-5 h-5 text-error" /> Anomaly Detection
           </h2>
-          <span className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-500">Live 30-Day Analysis</span>
+          <span className="text-xs font-mono bg-base-200 text-base-content/70 px-3 py-1 rounded-full">
+            30-Day Analysis
+          </span>
         </div>
 
         {/* KPI CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-6 border rounded-xl flex items-center justify-between shadow-sm">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Active Issues</p>
-              <h3 className="text-3xl font-bold text-red-600">{anomalyData?.summary?.active || 0}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="stats shadow border border-base-200 bg-base-100">
+            <div className="stat">
+              <div className="stat-figure text-error">
+                <AlertTriangle className="w-8 h-8 opacity-80" />
+              </div>
+              <div className="stat-title">Active Issues</div>
+              <div className="stat-value text-error">{anomalyData?.summary?.active || 0}</div>
+              <div className="stat-desc">Requires attention</div>
             </div>
-            <AlertTriangle className="w-8 h-8 text-red-500 opacity-20" />
           </div>
-          <div className="p-6 border rounded-xl flex items-center justify-between shadow-sm">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Resolved</p>
-              <h3 className="text-3xl font-bold text-green-600">{anomalyData?.summary?.resolved || 0}</h3>
+
+          <div className="stats shadow border border-base-200 bg-base-100">
+            <div className="stat">
+              <div className="stat-figure text-success">
+                <CheckCircle className="w-8 h-8 opacity-80" />
+              </div>
+              <div className="stat-title">Resolved</div>
+              <div className="stat-value text-success">{anomalyData?.summary?.resolved || 0}</div>
+              <div className="stat-desc">Fixed successfully</div>
             </div>
-            <CheckCircle className="w-8 h-8 text-green-500 opacity-20" />
           </div>
-          <div className="p-6 border rounded-xl flex items-center justify-between shadow-sm">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Total Events</p>
-              <h3 className="text-3xl font-bold text-blue-600">{anomalyData?.summary?.total || 0}</h3>
+
+          <div className="stats shadow border border-base-200 bg-base-100">
+            <div className="stat">
+              <div className="stat-figure text-info">
+                <Clock className="w-8 h-8 opacity-80" />
+              </div>
+              <div className="stat-title">Total Events</div>
+              <div className="stat-value text-info">{anomalyData?.summary?.total || 0}</div>
+              <div className="stat-desc">Past 30 days</div>
             </div>
-            <Clock className="w-8 h-8 text-blue-500 opacity-20" />
           </div>
         </div>
 
-        {/* CHARTS */}
+        {/* CHARTS GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="border rounded-xl p-4 bg-white shadow-sm">
-            <h3 className="text-sm font-semibold mb-4 text-gray-500 uppercase tracking-wider">Distribution by Type</h3>
-            <div className="h-[300px]">
-              {anomalyData?.distribution?.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={anomalyData.distribution}
-                      innerRadius={60}
-                      outerRadius={80}
-                      paddingAngle={5}
-                      dataKey="value"
-                    >
-                      {anomalyData.distribution.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend verticalAlign="bottom" height={36} />
-                  </PieChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="h-full flex items-center justify-center text-sm text-gray-400 italic">No anomalies to display</div>
-              )}
+          
+          {/* Pie Chart Card */}
+          <div className="card bg-base-100 shadow-sm border border-base-200">
+            <div className="card-body p-6">
+              <h3 className="text-sm font-bold text-base-content/60 uppercase tracking-wider mb-4">Distribution by Type</h3>
+              <div className="h-[300px] w-full">
+                {anomalyData?.distribution?.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={anomalyData.distribution}
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                        stroke="none"
+                      >
+                        {anomalyData.distribution.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.fill} />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        contentStyle={{ 
+                            backgroundColor: 'hsl(var(--b1))', 
+                            borderColor: 'hsl(var(--b3))', 
+                            borderRadius: '0.5rem',
+                            color: 'hsl(var(--bc))'
+                        }} 
+                      />
+                      <Legend verticalAlign="bottom" height={36} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-full flex items-center justify-center text-sm text-base-content/40 italic">No anomalies to display</div>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="border rounded-xl p-4 bg-white shadow-sm">
-            <h3 className="text-sm font-semibold mb-4 text-gray-500 uppercase tracking-wider">7-Day Incident Trend</h3>
-            <div className="h-[300px]">
-              {anomalyData?.trends?.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={anomalyData.trends}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="date" tickFormatter={(v) => new Date(v).getDate()} fontSize={12} />
-                    <YAxis allowDecimals={false} fontSize={12} />
-                    <Tooltip labelFormatter={(l) => new Date(l).toLocaleDateString()} />
-                    <Bar dataKey="count" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="h-full flex items-center justify-center text-sm text-gray-400 italic">No trend data available</div>
-              )}
+          {/* Bar Chart Card */}
+          <div className="card bg-base-100 shadow-sm border border-base-200">
+            <div className="card-body p-6">
+              <h3 className="text-sm font-bold text-base-content/60 uppercase tracking-wider mb-4">7-Day Incident Trend</h3>
+              <div className="h-[300px] w-full">
+                {anomalyData?.trends?.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={anomalyData.trends}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--b3))" />
+                      <XAxis 
+                        dataKey="date" 
+                        tickFormatter={(v) => new Date(v).getDate()} 
+                        fontSize={12} 
+                        tick={{ fill: "hsl(var(--bc))", opacity: 0.7 }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <YAxis 
+                        allowDecimals={false} 
+                        fontSize={12} 
+                        tick={{ fill: "hsl(var(--bc))", opacity: 0.7 }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <Tooltip 
+                        cursor={{ fill: "hsl(var(--b2))" }}
+                        contentStyle={{ 
+                            backgroundColor: 'hsl(var(--b1))', 
+                            borderColor: 'hsl(var(--b3))', 
+                            borderRadius: '0.5rem',
+                            color: 'hsl(var(--bc))'
+                        }}
+                        labelFormatter={(l) => new Date(l).toLocaleDateString()} 
+                      />
+                      <Bar dataKey="count" fill="hsl(var(--p))" radius={[4, 4, 0, 0]} barSize={40} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-full flex items-center justify-center text-sm text-base-content/40 italic">No trend data available</div>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
         {/* RECENT LIST */}
-        <div className="border rounded-xl bg-white shadow-sm overflow-hidden">
-          <div className="p-4 border-b flex items-center justify-between">
-            <h3 className="font-semibold text-gray-700">Recent Incident Log</h3>
-            <TrendingUp className="w-4 h-4 text-gray-400" />
+        <div className="card bg-base-100 shadow-sm border border-base-200 overflow-hidden">
+          <div className="p-4 border-b border-base-200 flex items-center justify-between bg-base-50/50">
+            <h3 className="font-bold text-base-content flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-primary" /> Recent Incident Log
+            </h3>
           </div>
 
-          <div className="divide-y max-h-[400px] overflow-y-auto">
+          <div className="divide-y divide-base-200 max-h-[400px] overflow-y-auto">
             {anomalyData?.recent?.length > 0 ? (
               anomalyData.recent.map((item) => (
-                <div key={item._id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                <div key={item._id} className="p-4 flex flex-col md:flex-row md:items-center justify-between hover:bg-base-200/50 transition-colors gap-4">
+                  
+                  {/* Left: Info */}
                   <div className="flex items-center gap-4">
-                    <div className={`w-1.5 h-10 rounded-full ${item.severity === 'Critical' ? 'bg-red-500' : 'bg-blue-400'}`}></div>
+                    <div className={`w-1.5 h-10 rounded-full ${item.severity === 'Critical' ? 'bg-error shadow-[0_0_8px_rgba(255,0,0,0.4)]' : 'bg-info'}`}></div>
                     <div>
-                      <p className="font-bold text-gray-800">{item.type}</p>
-                      <p className="text-xs text-gray-400">{new Date(item.time).toLocaleString()}</p>
+                      <p className="font-bold text-base-content">{item.type}</p>
+                      <p className="text-xs text-base-content/50 font-mono">
+                        {new Date(item.time).toLocaleString()}
+                      </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase ${
-                      item.status === 'OPEN' ? 'border-orange-200 text-orange-600 bg-orange-50' : 'border-gray-200 text-gray-400'
+
+                  {/* Right: Status & Action */}
+                  <div className="flex items-center gap-4 self-end md:self-auto">
+                    <span className={`badge font-bold ${
+                      item.status === 'OPEN' ? 'badge-warning badge-outline' : 'badge-success badge-outline'
                     }`}>
                       {item.status}
                     </span>
+                    
                     {item.status === 'OPEN' && (
                       <button 
                         onClick={() => handleResolve(item._id)}
                         disabled={isResolving}
-                        className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                        className="btn btn-sm btn-ghost text-primary hover:bg-primary/10"
                       >
-                        <Check className="w-3 h-3" /> Mark Resolved
+                        {isResolving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                        <span className="ml-1">Mark Resolved</span>
                       </button>
                     )}
                   </div>
                 </div>
               ))
             ) : (
-              <div className="p-10 text-center text-gray-400 italic">No anomalies detected. System is healthy.</div>
+              <div className="p-12 flex flex-col items-center justify-center text-base-content/40">
+                <CheckCircle className="w-10 h-10 mb-2 opacity-20" />
+                <p className="text-sm italic">No anomalies detected. System is healthy.</p>
+              </div>
             )}
           </div>
         </div>

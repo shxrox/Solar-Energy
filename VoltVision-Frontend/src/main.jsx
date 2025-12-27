@@ -116,7 +116,7 @@ createRoot(document.getElementById("root")).render(
                     <Route path="/admin/solar-units/:id" element={<SolarUnitDetailPage />} />
                     <Route path="/admin/solar-units/:id/edit" element={<SolarUnitEditPage />} />
                     <Route path="/admin/solar-units/create" element={<SolarUnitCreatePage />} />
-                    <Route path="/admi/solar-units/anomalies" element={<AdminAnomaliesPage />} />
+                    <Route path="/admi/anomalies" element={<AdminAnomaliesPage />} />
                     <Route path="/admin/settings" element={<SettingsPage />} />
                     <Route path="/admin/invoices-dashbord" element={<InvoiceDashbord />} />
                   </Route>

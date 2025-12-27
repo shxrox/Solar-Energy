@@ -54,7 +54,7 @@ const adminItems = [
   },
     {
     title: "Anomalies Overview",
-    url: "/admi/solar-units/anomalies",
+    url: "/admi/anomalies",
     icon: <AlertTriangle className="w-5 h-5" />,
   },
   {
