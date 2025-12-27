@@ -90,62 +90,117 @@
 //     `[Energy Cron] Scheduler initialized - Energy generation records will be created at: ${schedule}`
 //   );
 // };
+// import cron from 'node-cron';
+// import { EnergyGenerationRecord } from './entities/EnergyGenerationRecord';
+
+// // Reusing the same logic for consistency
+// function calculateEnergyGeneration(timestamp: Date): number {
+//   const hour = timestamp.getHours();
+  
+//   // Night time = 0
+//   if (hour < 6 || hour > 18) return 0;
+
+//   // Base Curve
+//   const radians = ((hour - 6) / 12) * Math.PI;
+//   const baseEnergy = 5000 * Math.sin(radians);
+
+//   // ANOMALY ROULETTE (Live Data)
+//   const chance = Math.random();
+  
+//   // 5% Chance of sudden drop (Cloud/Glitch)
+//   if (chance < 0.05) return baseEnergy * 0.1;
+
+//   // 1% Chance of spike
+//   if (chance > 0.99) return 12000;
+
+//   // Normal + Random Noise
+//   return Math.floor(baseEnergy * (0.8 + Math.random() * 0.4));
+// }
+
+// async function generateNewRecord() {
+//   try {
+//     const timestamp = new Date();
+//     // Ensure this matches your Admin Dashboard unit
+//     const serialNumber = process.env.SOLAR_UNIT_SERIAL || 'SU-0001'; 
+
+//     const energyGenerated = calculateEnergyGeneration(timestamp);
+
+//     await EnergyGenerationRecord.create({
+//       serialNumber,
+//       timestamp,
+//       energyGenerated,
+//       intervalHours: 1, // Set to 1 hour for finer grain
+//     });
+
+//     console.log(`[Cron] Generated ${energyGenerated}Wh for ${serialNumber}`);
+//   } catch (error) {
+//     console.error(`[Cron Error]`, error);
+//   }
+// }
+
+// export const initializeEnergyCron = () => {
+//   // Run every 10 seconds for DEMO purposes (so you see live updates)
+//   // OR use '0 * * * *' for every hour in production
+//   const schedule = '*/10 * * * * *'; 
+
+//   cron.schedule(schedule, async () => {
+//     await generateNewRecord();
+//   });
+
+//   console.log(`[Energy Cron] Running schedule: ${schedule}`);
+// };
+
 import cron from 'node-cron';
 import { EnergyGenerationRecord } from './entities/EnergyGenerationRecord';
 
-// Reusing the same logic for consistency
 function calculateEnergyGeneration(timestamp: Date): number {
   const hour = timestamp.getHours();
   
   // Night time = 0
   if (hour < 6 || hour > 18) return 0;
 
-  // Base Curve
+  // Base Curve (Sine wave)
   const radians = ((hour - 6) / 12) * Math.PI;
   const baseEnergy = 5000 * Math.sin(radians);
 
-  // ANOMALY ROULETTE (Live Data)
   const chance = Math.random();
-  
-  // 5% Chance of sudden drop (Cloud/Glitch)
-  if (chance < 0.05) return baseEnergy * 0.1;
+  if (chance < 0.05) return baseEnergy * 0.1; // Cloud drop
+  if (chance > 0.99) return 12000;            // Spike
 
-  // 1% Chance of spike
-  if (chance > 0.99) return 12000;
-
-  // Normal + Random Noise
   return Math.floor(baseEnergy * (0.8 + Math.random() * 0.4));
 }
 
-async function generateNewRecord() {
+// Updated to handle multiple units
+async function generateDataForAllUnits() {
   try {
     const timestamp = new Date();
-    // Ensure this matches your Admin Dashboard unit
-    const serialNumber = process.env.SOLAR_UNIT_SERIAL || 'SU-0001'; 
+    // List all the units you want to see data for
+    const units = ['SU-0001', 'SU-0002', 'SU-0003']; 
 
-    const energyGenerated = calculateEnergyGeneration(timestamp);
+    for (const serialNumber of units) {
+      const energyGenerated = calculateEnergyGeneration(timestamp);
 
-    await EnergyGenerationRecord.create({
-      serialNumber,
-      timestamp,
-      energyGenerated,
-      intervalHours: 1, // Set to 1 hour for finer grain
-    });
+      await EnergyGenerationRecord.create({
+        serialNumber,
+        timestamp,
+        energyGenerated,
+        intervalHours: 1,
+      });
 
-    console.log(`[Cron] Generated ${energyGenerated}Wh for ${serialNumber}`);
+      console.log(`[Cron] Generated ${energyGenerated}Wh for ${serialNumber}`);
+    }
   } catch (error) {
     console.error(`[Cron Error]`, error);
   }
 }
 
 export const initializeEnergyCron = () => {
-  // Run every 10 seconds for DEMO purposes (so you see live updates)
-  // OR use '0 * * * *' for every hour in production
   const schedule = '*/10 * * * * *'; 
 
   cron.schedule(schedule, async () => {
-    await generateNewRecord();
+    // Calling the new plural function
+    await generateDataForAllUnits();
   });
 
-  console.log(`[Energy Cron] Running schedule: ${schedule}`);
+  console.log(`[Energy Cron] Running schedule for all units: ${schedule}`);
 };

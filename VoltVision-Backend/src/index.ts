@@ -3,7 +3,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { clerkMiddleware } from "@clerk/express";
-
+import { syncEnergyGenerationRecords } from "./application/background/sync-energy-generation-records";
 // ... existing middleware imports
 import { globalErrorHandler } from "./api/middlewares/global-error-handling-middleware";
 import { loggerMiddleware } from "./api/middlewares/logger-middleware";
@@ -12,6 +12,8 @@ import { authenticationMiddleware } from "./api/middlewares/authentication-middl
 // ... existing infrastructure imports
 import { connectDB } from "./infrastructure/db";
 import { initializeScheduler } from "./infrastructure/scheduler";
+import anomalyRouter from "./api/anomalies";
+// ... after other router registrations
 
 // ... existing router imports
 import energyGenerationRecordRouter from "./api/energy-generation-record";
@@ -21,8 +23,8 @@ import webhooksRouter from "./api/webhooks";
 import invoiceRouter from "./api/invoice";
 
 // 👇 1. IMPORT PAYMENT ROUTER & WEBHOOK HANDLER
-import paymentRouter from "./api/payment"; 
-import { handleStripeWebhook } from "./application/payment"; 
+import paymentRouter from "./api/payment";
+import { handleStripeWebhook } from "./application/payment";
 
 // ... controller imports (analytics/weather) ...
 import { getWeatherData } from "./application/weather";
@@ -35,7 +37,7 @@ server.use(loggerMiddleware);
 
 // --- SPECIAL ROUTES (Must be before express.json) ---
 server.use("/api/webhooks", webhooksRouter);
-
+server.use("/api/anomalies", anomalyRouter);
 // 👇 2. STRIPE WEBHOOK (Critical: Needs raw body)
 server.post(
   "/api/stripe/webhook",
@@ -66,7 +68,44 @@ server.use(globalErrorHandler);
 connectDB();
 initializeScheduler();
 
+
+
 const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+  
 });
+
+// ... existing imports ...
+
+// --- DATABASE & STARTUP ---
+const startApp = async () => {
+  try {
+    // 1. Connect to Database
+    await connectDB();
+    console.log("Connected to MongoDB");
+
+    // 2. Initialize the Cron Scheduler
+    initializeScheduler();
+    console.log("[Scheduler] Energy generation records sync scheduled");
+
+    // ✅ 3. TEMP: MANUAL SYNC (Add this here)
+    // This ensures your empty 'anomalies' collection gets populated immediately
+    console.log("Starting manual sync for anomaly detection...");
+    await syncEnergyGenerationRecords(); 
+    console.log("Manual sync finished.");
+
+    // 4. Start Server
+    const PORT = process.env.PORT || 8000;
+    server.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+    
+  } catch (error) {
+    console.error("Failed to start the application:", error);
+    process.exit(1);
+  }
+};
+
+// Execute the startup
+startApp();

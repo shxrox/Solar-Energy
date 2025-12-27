@@ -1,6 +1,4 @@
 
-
-
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
@@ -26,7 +24,7 @@ server.use(globalErrorHandler);
 connectDB();
 initializeEnergyCron();
 
-// ✅ Correct Port Logic for Render
+
 const PORT = process.env.PORT || 8001;
 server.listen(PORT, () => {
   console.log(`Data API Server is running on port ${PORT}`);

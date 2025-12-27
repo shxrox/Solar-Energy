@@ -183,9 +183,9 @@
 
 
 import mongoose from "mongoose";
-import { EnergyGenerationRecord } from "../infrastructure/entities/EnergyGenerationRecord";
+import { EnergyGenerationRecord } from "./entities/EnergyGenerationRecord";
 import dotenv from "dotenv";
-import { connectDB } from "../infrastructure/db";
+import { connectDB } from "./db";
 
 dotenv.config();
 
