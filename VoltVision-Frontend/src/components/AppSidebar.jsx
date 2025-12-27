@@ -10,7 +10,8 @@ import {
   Settings,
   Landmark,
   Menu,
-  X
+  X,
+  AlertTriangle
 } from "lucide-react";
 import { Link, useLocation } from "react-router";
 import { useUser } from "@clerk/clerk-react";
@@ -50,6 +51,11 @@ const adminItems = [
     title: "Financial Overview",
     url: "/admin/invoices-dashbord",
     icon: <Landmark className="w-5 h-5" />,
+  },
+    {
+    title: "Anomalies Overview",
+    url: "/admi/solar-units/anomalies",
+    icon: <AlertTriangle className="w-5 h-5" />,
   },
   {
     title: "Settings",

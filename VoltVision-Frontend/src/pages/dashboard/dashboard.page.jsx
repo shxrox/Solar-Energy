@@ -5,8 +5,8 @@ import { AlertCircle, Zap, LayoutDashboard, BarChart3, Loader2 } from "lucide-re
 
 // Import Components
 import DataChart from "./components/DataChart";
-import WeatherWidget from "../wather/WeatherWidget"; // New
-import CapacityFactorChart from "../wather/CapacityFactorChart"; // New
+import WeatherWidget from "../weather/WeatherWidget"; // New
+import CapacityFactorChart from "../weather/CapacityFactorChart"; // New
 
 const DashboardPage = () => {
   const { user, isLoaded } = useUser();

@@ -264,7 +264,7 @@ import { AlertTriangle, CheckCircle, Clock, ThermometerSun, AlertCircle, Trendin
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
 // Import Task 3 Components
-import WeatherWidget from "../wather/WeatherWidget";
+import WeatherWidget from "../weather/WeatherWidget";
 import CapacityFactorChart from "../dashboard/components/CapacityFactorChart";
 
 const AnalyticsPage = () => {

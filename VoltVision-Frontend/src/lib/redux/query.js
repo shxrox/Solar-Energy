@@ -1,4 +1,5 @@
 
+
 // import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 // const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
@@ -18,9 +19,11 @@
 //       return headers;
 //     },
 //   }),
-//   tagTypes: ["SolarUnits", "Users", "Invoices"], 
+//   // ✅ Added "Anomalies" to tagTypes for automatic UI refreshes
+//   tagTypes: ["SolarUnits", "Users", "Invoices", "Anomalies"], 
 //   endpoints: (build) => ({
-//     // ... (Keep existing endpoints) ...
+    
+//     // --- SOLAR UNIT ENDPOINTS ---
 //     getSolarUnits: build.query({
 //       query: () => `/solar-units`,
 //       providesTags: ["SolarUnits"],
@@ -56,25 +59,47 @@
 //       }),
 //       invalidatesTags: ["SolarUnits"],
 //     }),
+
+//     // --- ENERGY & WEATHER ENDPOINTS ---
 //     getEnergyGenerationRecordsBySolarUnit: build.query({
 //       query: ({ id, groupBy, limit }) =>
 //         `/energy-generation-records/solar-unit/${id}?groupBy=${groupBy}&limit=${limit}`,
 //     }),
+//     getWeather: build.query({
+//       query: () => `/weather`,
+//     }),
+
+//     // --- ANALYTICS & ANOMALY DETECTION (Task 5) ---
+//     getCapacityFactor: build.query({
+//       query: (solarUnitId) => `/analytics/capacity-factor/${solarUnitId}`,
+//     }),
+//     // ✅ FIXED URL: Points to the anomaly router to avoid 404 errors
+//     getAnomalyStats: build.query({
+//       query: (solarUnitId) => `/anomalies/analytics/${solarUnitId}`,
+//       providesTags: ["Anomalies"],
+//     }),
+//     // This fetches the list of anomalies for the current user
+//     getMyAnomalies: build.query({
+//       query: () => `/anomalies/my-unit`,
+//       providesTags: ["Anomalies"],
+//     }),
+//     // Action to mark as resolved
+//     resolveAnomaly: build.mutation({
+//       query: (id) => ({
+//         url: `/anomalies/${id}/resolve`,
+//         method: "PATCH",
+//       }),
+//       // ✅ This invalidates the chart and list data so they update immediately
+//       invalidatesTags: ["Anomalies"],
+//     }),
+
+//     // --- USER MANAGEMENT ---
 //     getAllUsers: build.query({
 //       query: () => `/users`,
 //       providesTags: ["Users"],
 //     }),
-//     getWeather: build.query({
-//       query: () => `/weather`,
-//     }),
-//     getCapacityFactor: build.query({
-//       query: (solarUnitId) => `/analytics/capacity-factor/${solarUnitId}`,
-//     }),
-//     getAnomalyStats: build.query({
-//       query: (solarUnitId) => `/analytics/anomalies/${solarUnitId}`,
-//     }),
 
-//     // --- BILLING ENDPOINTS ---
+//     // --- BILLING & PAYMENT ENDPOINTS ---
 //     getMyInvoices: build.query({
 //       query: () => `/invoices`,
 //       providesTags: ["Invoices"],
@@ -90,7 +115,7 @@
 //       query: (sessionId) => `/payments/session-status?session_id=${sessionId}`,
 //     }),
 
-//     // --- ✅ NEW ADMIN INVOICE ENDPOINTS ---
+//     // --- ADMIN ENDPOINTS ---
 //     getAllInvoices: build.query({
 //       query: (status) => `/invoices/admin/all${status ? `?status=${status}` : ''}`,
 //       providesTags: ["Invoices"],
@@ -103,27 +128,42 @@
 //       }),
 //       invalidatesTags: ["Invoices"],
 //     }),
+//     getAllAnomaliesAdmin: build.query({
+//       query: () => `/anomalies/admin/all`,
+//       providesTags: ["Anomalies"],
+//     }),
 //   }),
 // });
 
+
+
 // export const {
-//   // Existing hooks
+//   // Solar Unit Hooks
 //   useGetSolarUnitsQuery,
 //   useGetSolarUnitByIdQuery,
 //   useGetSolarUnitForUserQuery,
 //   useCreateSolarUnitMutation,
 //   useEditSolarUnitMutation,
 //   useDeleteSolarUnitMutation,
+
+//   // Energy & Analytics Hooks
 //   useGetEnergyGenerationRecordsBySolarUnitQuery,
-//   useGetAllUsersQuery,
 //   useGetWeatherQuery,
 //   useGetCapacityFactorQuery,
+  
+//   // ✅ Anomaly Hooks
 //   useGetAnomalyStatsQuery,
+//   useGetMyAnomaliesQuery,
+//   useResolveAnomalyMutation,
+//   useGetAllAnomaliesAdminQuery,
+
+//   // Billing Hooks
 //   useGetMyInvoicesQuery,
 //   useCreateCheckoutSessionMutation,
 //   useGetSessionStatusQuery,
 
-//   // ✅ New Admin Hooks
+//   // Admin & User Hooks
+//   useGetAllUsersQuery,
 //   useGetAllInvoicesQuery,
 //   useUpdateInvoiceStatusMutation,
 // } = api;
@@ -147,8 +187,8 @@ export const api = createApi({
       return headers;
     },
   }),
-  // ✅ Added "Anomalies" to tagTypes for automatic UI refreshes
-  tagTypes: ["SolarUnits", "Users", "Invoices", "Anomalies"], 
+  // ✅ Added "Settings" to tagTypes so the UI updates after saving
+  tagTypes: ["SolarUnits", "Users", "Invoices", "Anomalies", "Settings"], 
   endpoints: (build) => ({
     
     // --- SOLAR UNIT ENDPOINTS ---
@@ -197,27 +237,26 @@ export const api = createApi({
       query: () => `/weather`,
     }),
 
-    // --- ANALYTICS & ANOMALY DETECTION (Task 5) ---
+    // --- ANALYTICS & ANOMALY DETECTION ---
     getCapacityFactor: build.query({
       query: (solarUnitId) => `/analytics/capacity-factor/${solarUnitId}`,
     }),
-    // This fetches the chart data (pie/trends)
+    // Charts Data
     getAnomalyStats: build.query({
-      query: (solarUnitId) => `/analytics/anomalies/${solarUnitId}`,
+      query: (solarUnitId) => `/anomalies/analytics/${solarUnitId}`,
       providesTags: ["Anomalies"],
     }),
-    // This fetches the list of anomalies for the current user
+    // User's Anomaly List
     getMyAnomalies: build.query({
       query: () => `/anomalies/my-unit`,
       providesTags: ["Anomalies"],
     }),
-    // Action to mark as resolved
+    // Resolve Action
     resolveAnomaly: build.mutation({
       query: (id) => ({
         url: `/anomalies/${id}/resolve`,
         method: "PATCH",
       }),
-      // ✅ This invalidates the chart and list data so they update immediately
       invalidatesTags: ["Anomalies"],
     }),
 
@@ -227,7 +266,7 @@ export const api = createApi({
       providesTags: ["Users"],
     }),
 
-    // --- BILLING & PAYMENT ENDPOINTS ---
+    // --- BILLING & PAYMENT ---
     getMyInvoices: build.query({
       query: () => `/invoices`,
       providesTags: ["Invoices"],
@@ -241,6 +280,20 @@ export const api = createApi({
     }),
     getSessionStatus: build.query({
       query: (sessionId) => `/payments/session-status?session_id=${sessionId}`,
+    }),
+
+    // --- SYSTEM SETTINGS (NEW) ---
+    getSystemSettings: build.query({
+      query: () => `/settings`,
+      providesTags: ["Settings"],
+    }),
+    updateSystemSettings: build.mutation({
+      query: (data) => ({
+        url: `/settings`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Settings"],
     }),
 
     // --- ADMIN ENDPOINTS ---
@@ -277,7 +330,7 @@ export const {
   useGetWeatherQuery,
   useGetCapacityFactorQuery,
   
-  // ✅ Anomaly Hooks (Task 5)
+  // Anomaly Hooks
   useGetAnomalyStatsQuery,
   useGetMyAnomaliesQuery,
   useResolveAnomalyMutation,
@@ -287,6 +340,10 @@ export const {
   useGetMyInvoicesQuery,
   useCreateCheckoutSessionMutation,
   useGetSessionStatusQuery,
+
+  // System Settings Hooks (NEW)
+  useGetSystemSettingsQuery,
+  useUpdateSystemSettingsMutation,
 
   // Admin & User Hooks
   useGetAllUsersQuery,

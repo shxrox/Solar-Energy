@@ -36,7 +36,7 @@ import SolarUnitEditPage from "./pages/admin/solar-unit-edit.page.jsx";
 import SolarUnitCreatePage from "./pages/admin/solar-unit-create.page.jsx";
 import SettingsPage from "./pages/admin/settings.page.jsx";
 import InvoiceDashbord from "./pages/admin/invoices.page.jsx";
-
+import AdminAnomaliesPage from "./pages/admin/admin-anomalies.page.jsx";
 // --- BILLING PAGES ---
 import InvoicesPage from "./pages/invoices/invoices.page.jsx";
 import PaymentPage from "./pages/payment/payment.page.jsx";
@@ -116,6 +116,7 @@ createRoot(document.getElementById("root")).render(
                     <Route path="/admin/solar-units/:id" element={<SolarUnitDetailPage />} />
                     <Route path="/admin/solar-units/:id/edit" element={<SolarUnitEditPage />} />
                     <Route path="/admin/solar-units/create" element={<SolarUnitCreatePage />} />
+                    <Route path="/admi/solar-units/anomalies" element={<AdminAnomaliesPage />} />
                     <Route path="/admin/settings" element={<SettingsPage />} />
                     <Route path="/admin/invoices-dashbord" element={<InvoiceDashbord />} />
                   </Route>
